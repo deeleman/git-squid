@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 401 401" xml:space="preserve">
+<g id="XMLID_826_">
+	<path id="XMLID_827_" style="fill:#9DD7F5;" d="M275.5,330c-11.028,0-20-8.972-20-20V200h-55h-55v110c0,11.028-8.972,20-20,20h-25
+		v30h25c19.768,0,36.89-11.532,45-28.221V351c0,11.028-8.972,20-20,20v30c27.57,0,50-22.43,50-50c0,27.57,22.43,50,50,50v-30
+		c-11.028,0-20-8.972-20-20v-19.221c8.11,16.689,25.232,28.221,45,28.221h25v-30H275.5z"/>
+	<path id="XMLID_828_" style="fill:#78B9EB;" d="M255.5,200v110c0,11.028,8.972,20,20,20h25v30h-25
+		c-19.768,0-36.89-11.532-45-28.221V351c0,11.028,8.972,20,20,20v30c-27.57,0-50-22.43-50-50V200H255.5z"/>
+	<g id="XMLID_829_">
+		<circle id="XMLID_830_" style="fill:#001B3C;" cx="175.5" cy="250" r="10"/>
+	</g>
+	<g id="XMLID_831_">
+		<circle id="XMLID_832_" style="fill:#001B3C;" cx="225.5" cy="250" r="10"/>
+	</g>
+	<g id="XMLID_833_">
+		<path id="XMLID_834_" style="fill:#9DD7F5;" d="M200.5,0c0,0-80,60-80,80s50,60,50,60L200.5,0z"/>
+	</g>
+	<g id="XMLID_835_">
+		<path id="XMLID_836_" style="fill:#78B9EB;" d="M200.5,0c0,0,80,60,80,80s-50,60-50,60L200.5,0z"/>
+	</g>
+	<path id="XMLID_837_" style="fill:#FF9811;" d="M200.5,0c0,0-70.534,76.551-54.953,201.559c17.75,5.484,35.402,8.441,54.953,8.441
+		s37.203-2.957,54.953-8.441C271.034,76.551,200.5,0,200.5,0z"/>
+	<g id="XMLID_838_">
+		<g id="XMLID_839_">
+			<path id="XMLID_840_" style="fill:#FF5023;" d="M200.5,0v210c19.551,0,37.203-2.957,54.953-8.441C271.034,76.551,200.5,0,200.5,0
+				z"/>
+		</g>
+	</g>
+</g>
+</svg>

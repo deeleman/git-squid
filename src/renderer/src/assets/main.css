@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  flex-direction: column;
+  background-image: url('./wavy-lines.svg');
+  background-size: cover;
+  user-select: none; 
+  -webkit-user-select: none;
+  min-height: 100vh;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root,
+#root > * {
+  height: 100vh;
+}
+
+header {
+  -webkit-app-region: drag;
+}
+
+header button,
+header a,
+header span[data-paste-element="ICON"] {
+  -webkit-app-region: no-drag;
+}
+
+header a {
+  /* Overrides Paste's default theme */
+  text-decoration: none!important;
+}
