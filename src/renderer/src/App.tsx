@@ -9,10 +9,10 @@ function App(): JSX.Element {
   return (
     <Router>
       <Route>
-        <Viewer />
-      </Route>
-      <Route path="loader">
         <Loader />
+      </Route>
+      <Route path="viewer">
+        <Viewer />
       </Route>
       <Route path="settings">
         <Settings />

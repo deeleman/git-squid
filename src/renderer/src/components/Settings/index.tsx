@@ -14,7 +14,7 @@ function Settings(): JSX.Element {
       <Text textAlign={'center'} as="h1" color="colorTextWeak" fontSize={'fontSize20'}>
         GitSquid Settings
       </Text>
-      <Button variant="secondary" onClick={() => navigate('loader')}>
+      <Button variant="secondary" onClick={() => navigate('index')}>
         Submit
       </Button>
     </Flex>

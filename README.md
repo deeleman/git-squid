@@ -1,6 +1,6 @@
 # git-squid
 
-An Electron application with React and TypeScript
+GitSquid is a convenient and configurable desktop viewer for GitHub issues, built on topf of Electron, React and TypeScript
 
 ## Recommended IDE Setup
 

@@ -1,14 +1,10 @@
 import squidIcon from '@renderer/assets/squid-icon.svg'
-import { useRouter } from '@renderer/Router'
 import { Box } from '@twilio-paste/core/dist/box'
-import { Button } from '@twilio-paste/core/button'
 import { Flex } from '@twilio-paste/core/flex'
 import { Heading } from '@twilio-paste/core/heading'
 import { Spinner } from '@twilio-paste/core/spinner'
 
 function Loader(): JSX.Element {
-  const { navigate } = useRouter()
-
   return (
     <Flex
       as="header"
@@ -20,7 +16,7 @@ function Loader(): JSX.Element {
     >
       <Box as="img" src={squidIcon} maxWidth={'128px'} marginBottom={'space100'} />
       <Heading variant="heading10" as="h1">
-        Loading GitSquid...
+        GitSquid is fetching data...
       </Heading>
       <Spinner
         color="colorTextPrimaryStrong"
@@ -28,9 +24,6 @@ function Loader(): JSX.Element {
         decorative={false}
         title="Loading"
       />
-      <Button variant="destructive" onClick={() => navigate('index')}>
-        Cancel
-      </Button>
     </Flex>
   )
 }

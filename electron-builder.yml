@@ -33,13 +33,13 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: uiux.es
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: https://uiux.es/git-squid/auto-updates
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
