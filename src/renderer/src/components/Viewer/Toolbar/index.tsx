@@ -1,4 +1,5 @@
 import squidIcon from '@renderer/assets/squid-icon.svg'
+import { useRouter } from '@renderer/Router'
 import { Box } from '@twilio-paste/core/box'
 import { Button } from '@twilio-paste/core/button'
 import { Flex } from '@twilio-paste/core/flex'
@@ -8,6 +9,8 @@ import { Tooltip } from '@twilio-paste/core/tooltip'
 import { ProductSettingsIcon } from '@twilio-paste/icons/esm/ProductSettingsIcon'
 
 function Toolbar(): JSX.Element {
+  const { navigate } = useRouter()
+
   return (
     <Flex
       minWidth={'82px'}
@@ -27,7 +30,7 @@ function Toolbar(): JSX.Element {
       </Flex>
       <Flex hAlignContent={'center'}>
         <Tooltip text="Update token and settings" placement="auto">
-          <Button variant="secondary" size="circle" onClick={(): void => alert('Not implemented')}>
+          <Button variant="secondary" size="circle" onClick={(): void => navigate('settings')}>
             <ProductSettingsIcon decorative={false} title="Update config" />
           </Button>
         </Tooltip>

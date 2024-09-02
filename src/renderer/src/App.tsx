@@ -1,15 +1,23 @@
-import { Flex } from '@twilio-paste/core/flex'
-import Issues from './components/Issues'
-import Toolbar from './components/Toolbar'
+import { Route, Router } from './Router'
+import Loader from './components/Loader'
+import Settings from './components/Settings'
+import Viewer from './components/Viewer'
 
 function App(): JSX.Element {
   // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
-    <Flex grow vAlignContent={'stretch'}>
-      <Toolbar />
-      <Issues />
-    </Flex>
+    <Router>
+      <Route>
+        <Viewer />
+      </Route>
+      <Route path="loader">
+        <Loader />
+      </Route>
+      <Route path="settings">
+        <Settings />
+      </Route>
+    </Router>
   )
 }
 
