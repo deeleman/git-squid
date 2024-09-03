@@ -1,6 +1,5 @@
 import { Badge } from '@twilio-paste/core/badge'
 import { Box } from '@twilio-paste/core/box'
-import { Button } from '@twilio-paste/core/button'
 import { Flex } from '@twilio-paste/core/flex'
 import { Heading } from '@twilio-paste/core/heading'
 import { Input } from '@twilio-paste/core/input'
@@ -21,8 +20,8 @@ function IssueNav(): JSX.Element {
       borderBottomWidth={'borderWidth10'}
       paddingX={'space40'}
     >
-      <Stack as="header" orientation={'vertical'} spacing={'space60'}>
-        <Flex vAlignContent={'center'} paddingTop={'space60'}>
+      <Stack orientation={'vertical'} spacing={'space60'}>
+        <Flex as="header" vAlignContent={'center'} paddingTop={'space60'}>
           <Heading as="h2" variant="heading40" marginBottom="space0">
             GitHub Issues
           </Heading>
@@ -51,11 +50,7 @@ function IssueNav(): JSX.Element {
           type="search"
           placeholder="Filter by keyword"
           onChange={(): void => {}}
-          insertAfter={
-            <Button variant="link">
-              <SearchIcon decorative size="sizeIcon20" />
-            </Button>
-          }
+          insertAfter={<SearchIcon decorative size="sizeIcon20" />}
         />
       </Stack>
     </Box>
