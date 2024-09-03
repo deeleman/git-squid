@@ -1,12 +1,12 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 
 export interface GitSquidAPI {
-  refreshIssues: (callback: (data: unknown) => void) => void
+  refreshIssues: (callback: (data: Issues) => void) => void
   tailIssues: () => Promise<unknown>
   markAsRead: (issueId: string) => Promise<unknown>
   enableLoader: (callback: () => void) => void
   getPreferences: () => Promise<Preferences>
-  fetchConfiguration: (callback: (data: unknown) => void) => void
+  fetchConfiguration: (callback: (data: Configuration) => void) => void
   updateConfiguration: (configuration: Configuration) => Promise<unknown>
 }
 

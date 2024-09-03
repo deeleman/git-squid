@@ -49,3 +49,15 @@ export enum MessageType {
    */
   MarkAsRead = 'data:issueChecked'
 }
+
+/**
+ * The {@link Issue} type represents a serialized, redux version of a GitHub issue as required by GitSquid.
+ */
+export type Issue = {
+  id: string
+}
+
+/**
+ * The {@link Issues} type represents an array of {@link Issue} instance objects.
+ */
+export type Issues = Issue[]
