@@ -41,13 +41,27 @@ export enum MessageType {
    */
   TailIssues = 'data:tail',
   /**
-   * Listens for requests from main to reset the screen and display the Loading screen.
-   */
-  ListenForLoadingProcess = 'loader:display',
-  /**
    * Marks a given issue as read
    */
-  MarkAsRead = 'data:issueChecked'
+  MarkAsRead = 'data:issueChecked',
+  /**
+   * Listens for requests from main to reset via preload layer the screen and display the Loading screen.
+   */
+  DisplayLoader = 'loader:display',
+  /**
+   * A generic message for emitting errors.
+   */
+  Error = 'main:error'
+}
+
+/**
+ * Message types for errors spawned in the main layer.
+ */
+export enum ErrorMessageType {
+  /**
+   * Depicts an error upon validating configuration token and/or repository url
+   */
+  configurationError = 'error:config'
 }
 
 /**
@@ -61,3 +75,16 @@ export type Issue = {
  * The {@link Issues} type represents an array of {@link Issue} instance objects.
  */
 export type Issues = Issue[]
+
+/**
+ * The shared interface exposed to Renderer.
+ */
+export interface GitSquidAPI {
+  onIssuesRefresh: (callback: (issues: Issues) => void) => void
+  refreshIssues: () => Promise<unknown>
+  markAsRead: (issueId: string) => Promise<unknown>
+  onDisplayLoader: (callback: () => void) => void
+  onConfigurationUpdate: (callback: (configuration: Configuration) => void) => void
+  updateConfiguration: (configuration: Configuration) => Promise<unknown>
+  onError: (callback: (error: unknown) => void) => void
+}

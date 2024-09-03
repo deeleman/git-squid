@@ -1,20 +1,22 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, ipcRenderer, type IpcRenderer } from 'electron'
-import { type Configuration, type Issues, MessageType } from './types'
+import { type Configuration, type GitSquidAPI, type Issues, MessageType } from './types'
 
 // Custom APIs for renderer
-const gitSquidAPI = {
-  refreshIssues: (callback: (data: Issues) => void): IpcRenderer =>
+const gitSquidAPI: GitSquidAPI = {
+  onIssuesRefresh: (callback: (data: Issues) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.RefreshIssues, (_, data: Issues) => callback(data)),
-  tailIssues: (): Promise<unknown> => ipcRenderer.invoke(MessageType.TailIssues),
+  refreshIssues: (): Promise<unknown> => ipcRenderer.invoke(MessageType.TailIssues),
   markAsRead: (issueId: string): Promise<unknown> =>
     ipcRenderer.invoke(MessageType.UpdateConfiguration, issueId),
-  enableLoader: (callback: () => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.ListenForLoadingProcess, () => callback()),
-  fetchConfiguration: (callback: (configuration: Configuration) => void): IpcRenderer =>
+  onDisplayLoader: (callback: () => void): IpcRenderer =>
+    ipcRenderer.on(MessageType.DisplayLoader, () => callback()),
+  onConfigurationUpdate: (callback: (configuration: Configuration) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.UpdateConfiguration, (_, data: Configuration) => callback(data)),
   updateConfiguration: (configuration: Configuration): Promise<unknown> =>
-    ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration)
+    ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration),
+  onError: (callback: (error: unknown) => void): IpcRenderer =>
+    ipcRenderer.on(MessageType.Error, (_, error: unknown) => callback(error))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
