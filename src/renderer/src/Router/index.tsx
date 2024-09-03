@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useCallback, useContext, useRef, useState } from 'react'
-import { Transition } from './Transition'
+import Transition from './Transition'
 
 const DEFAULT_ROUTE = 'index'
 
@@ -10,8 +10,9 @@ type RouterContextApi = {
   /**
    * Redirects the user to the component wrapped by the `<Route>` element annotated with such path.
    * @param path The path whose/s component/s we want to render. Admits full URLs.
+   * If not provided will load the `index` route
    */
-  navigate: (path: string) => void
+  navigate: (path?: string) => void
   /**
    * Current route enabled in the system. Defaults to {@link DEFAULT_ROUTE}.
    */
@@ -30,7 +31,7 @@ export function Router(props: PropsWithChildren): JSX.Element {
   const externalRouteRegexRef = useRef(new RegExp(/^https?:/))
 
   const navigate = useCallback(
-    (path: string) => {
+    (path = DEFAULT_ROUTE) => {
       if (externalRouteRegexRef.current.test(path)) {
         window.location.assign(path)
       } else if (path !== currentRoute) {
