@@ -25,55 +25,48 @@ export type Configuration = {
  */
 export enum MessageType {
   /**
-   * Fetches the current configuration setup data, if already persisted.
-   */
-  FetchConfiguration = 'config:pull',
-  /**
    * Broadcast a new configuration object if successfully updated.
    */
   Configuration = 'config:push',
-
   /**
    * Updates config by submitting a {@link Configuration} payload.
    */
   UpdateConfiguration = 'config:update',
+
+  /**
+   * Broadcasts the current issues recordset, usually updated after invoking 'data:fetch'.
+   */
+  Issues = 'data:push',
   /**
    * Emits a request for fetching the latest issues.
    */
-  RefreshIssues = 'data:refresh',
-  /**
-   * Emits a request for fetching older issues, based on the latest page fetched from main.
-   */
-  TailIssues = 'data:tail',
+  FetchIssues = 'data:fetch',
   /**
    * Marks a given issue as read
    */
-  MarkAsRead = 'data:issueChecked',
-  /**
-   * Listens for requests from main to reset via preload layer the screen and display the Loading screen.
-   */
-  DisplayLoader = 'loader:display',
-  /**
-   * A generic message for emitting errors.
-   */
-  Error = 'main:error'
-}
-
-/**
- * Message types for errors spawned in the main layer.
- */
-export enum ErrorMessageType {
-  /**
-   * Depicts an error upon validating configuration token and/or repository url
-   */
-  configurationError = 'error:config'
+  ReadIssue = 'data:issueIsRead'
 }
 
 /**
  * The {@link Issue} type represents a serialized, redux version of a GitHub issue as required by GitSquid.
  */
 export type Issue = {
-  id: string
+  id: number
+  url: string
+  comments: number
+  author: string
+  authorURL: string
+  isAdmin: boolean
+  assignee?: string
+  assigneeURL?: string
+  dateOpened: string
+  dateClosed?: string
+  title: string
+  state: 'open' | 'closed'
+  isLocked: boolean
+  body: string
+  labels?: string[]
+  read?: boolean
 }
 
 /**
@@ -88,9 +81,7 @@ export interface GitSquidAPI {
   updateConfiguration: (configuration: Configuration) => Promise<boolean>
   onConfiguration: (callback: (configuration: Configuration) => void) => void
 
-  onIssuesRefresh: (callback: (issues: Issues) => void) => void
-  refreshIssues: () => Promise<unknown>
-  markAsRead: (issueId: string) => Promise<unknown>
-
-  onError: (callback: (error: unknown) => void) => void
+  fetchIssues: (refresh?: boolean) => Promise<boolean>
+  onIssues: (callback: (issues: Issues) => void) => void
+  readIssue: (issueId: string) => Promise<void>
 }

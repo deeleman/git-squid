@@ -1,4 +1,4 @@
-import { type BrowserWindow, type IpcMain } from 'electron'
+import { type BrowserWindow, ipcMain } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { app } from 'electron'
@@ -11,10 +11,7 @@ export default class ConfigurationManager {
 
   private testingCallback?: (configuration: Configuration) => Promise<boolean> | boolean
 
-  constructor(
-    private readonly ipcMain: IpcMain,
-    private readonly browserWindow: BrowserWindow
-  ) {
+  constructor(private readonly browserWindow: BrowserWindow) {
     try {
       const configurationBackup = fs.readFileSync(this.backupFilePath, { encoding: 'utf-8' })
       this.configuration = JSON.parse(configurationBackup) as Configuration
@@ -27,7 +24,7 @@ export default class ConfigurationManager {
       }
     }
 
-    this.ipcMain.handle(MessageType.UpdateConfiguration, (_, configuration: Configuration) =>
+    ipcMain.handle(MessageType.UpdateConfiguration, (_, configuration: Configuration) =>
       this.save(configuration)
     )
   }

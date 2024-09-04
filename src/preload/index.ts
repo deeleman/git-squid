@@ -5,18 +5,15 @@ import { type Configuration, type GitSquidAPI, type Issues, MessageType } from '
 // Custom APIs for renderer
 const gitSquidAPI: GitSquidAPI = {
   onConfiguration: (callback: (configuration: Configuration) => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.Configuration, (e, data: Configuration) => callback(data)),
+    ipcRenderer.on(MessageType.Configuration, (_, data: Configuration) => callback(data)),
   updateConfiguration: (configuration: Configuration): Promise<boolean> =>
     ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration),
 
-  onIssuesRefresh: (callback: (data: Issues) => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.RefreshIssues, (_, data: Issues) => callback(data)),
-  refreshIssues: (): Promise<unknown> => ipcRenderer.invoke(MessageType.TailIssues),
-  markAsRead: (issueId: string): Promise<unknown> =>
-    ipcRenderer.invoke(MessageType.MarkAsRead, issueId),
-
-  onError: (callback: (error: unknown) => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.Error, (_, error: unknown) => callback(error))
+  fetchIssues: (refresh?: boolean): Promise<boolean> =>
+    ipcRenderer.invoke(MessageType.FetchIssues, refresh),
+  onIssues: (callback: (data: Issues) => void): IpcRenderer =>
+    ipcRenderer.on(MessageType.Issues, (_, data: Issues) => callback(data)),
+  readIssue: (issueId: string): Promise<void> => ipcRenderer.invoke(MessageType.ReadIssue, issueId),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -31,7 +28,7 @@ if (process.contextIsolated) {
   }
 } else {
   // @ts-ignore (define in dts)
-  window.electron = electronAPI
+  window.electron = electronAPI // TODO: Remove
   // @ts-ignore (define in dts)
   window.__gitSquid = gitSquidAPI
 }

@@ -1,9 +1,9 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { MessageType } from '../preload/types'
 import ConfigurationManager from './ConfigurationManager'
+import DataManager from './DataManager'
 
 function createWindow(): void {
   // Create the browser window.
@@ -22,17 +22,20 @@ function createWindow(): void {
     }
   })
 
-  // Initialize the configuration manager
-  const configManager = new ConfigurationManager(ipcMain, mainWindow)
+  // Initialize the data and configuration manager
+  const configManager = new ConfigurationManager(mainWindow)
+  const dataManager = new DataManager(mainWindow, configManager)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
 
+    // Emit config and issues data to renderer
     configManager.broadcast()
+    dataManager.broadcast()
 
+    // Validates config update requests based on whether the new config is honored by GitHub
     configManager.onConfigurationUpdateRequest((configuration) => {
-      // TODO: Add a validation routine for validating new configs before persisting them
-      return true
+      return dataManager.fetchIssues(configuration, true)
     })
   })
 

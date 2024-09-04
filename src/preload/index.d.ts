@@ -3,7 +3,7 @@ import type { GitSquidAPI } from './types'
 
 declare global {
   interface Window {
-    electron: ElectronAPI
+    electron: ElectronAPI // TODO: Remove
     __gitSquid: GitSquidAPI
   }
 }
