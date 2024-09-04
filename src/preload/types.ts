@@ -27,7 +27,12 @@ export enum MessageType {
   /**
    * Fetches the current configuration setup data, if already persisted.
    */
-  FetchConfiguration = 'config:fetch',
+  FetchConfiguration = 'config:pull',
+  /**
+   * Broadcast a new configuration object if successfully updated.
+   */
+  Configuration = 'config:push',
+
   /**
    * Updates config by submitting a {@link Configuration} payload.
    */
@@ -80,11 +85,12 @@ export type Issues = Issue[]
  * The shared interface exposed to Renderer.
  */
 export interface GitSquidAPI {
+  updateConfiguration: (configuration: Configuration) => Promise<boolean>
+  onConfiguration: (callback: (configuration: Configuration) => void) => void
+
   onIssuesRefresh: (callback: (issues: Issues) => void) => void
   refreshIssues: () => Promise<unknown>
   markAsRead: (issueId: string) => Promise<unknown>
-  onDisplayLoader: (callback: () => void) => void
-  onConfigurationUpdate: (callback: (configuration: Configuration) => void) => void
-  updateConfiguration: (configuration: Configuration) => Promise<unknown>
+
   onError: (callback: (error: unknown) => void) => void
 }

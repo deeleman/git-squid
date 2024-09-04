@@ -1,5 +1,5 @@
 import squidIcon from '@renderer/assets/squid-icon.svg'
-import { useRouter } from '@renderer/Router'
+import { useRouter } from '@renderer/providers/router'
 import { Box } from '@twilio-paste/core/box'
 import { Button } from '@twilio-paste/core/button'
 import { Flex } from '@twilio-paste/core/flex'

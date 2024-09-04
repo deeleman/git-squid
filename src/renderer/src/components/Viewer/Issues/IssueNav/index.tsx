@@ -1,3 +1,4 @@
+import { useConfiguration } from '@renderer/providers/configuration'
 import { Badge } from '@twilio-paste/core/badge'
 import { Box } from '@twilio-paste/core/box'
 import { Flex } from '@twilio-paste/core/flex'
@@ -9,6 +10,8 @@ import { EditIcon } from '@twilio-paste/icons/esm/EditIcon'
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon'
 
 function IssueNav(): JSX.Element {
+  const { configuration } = useConfiguration()
+
   return (
     <Box
       width={'100%'}
@@ -39,7 +42,12 @@ function IssueNav(): JSX.Element {
           </Flex>
           <Flex grow hAlignContent={'right'}>
             <Tooltip text="Create new issue" placement="auto">
-              <Badge as="button" variant="brand20" onClick={(): void => alert('Not implemented')}>
+              <Badge
+                as="a"
+                href={`${configuration?.url}/issues/new`}
+                target="_blank"
+                variant="brand20"
+              >
                 <EditIcon decorative={false} title="Create new issue" />
               </Badge>
             </Tooltip>

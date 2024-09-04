@@ -1,3 +1,4 @@
+import { useConfiguration } from '@renderer/providers/configuration'
 import { Anchor } from '@twilio-paste/core/anchor'
 import { Box } from '@twilio-paste/core/box'
 import { Flex } from '@twilio-paste/core/flex'
@@ -9,6 +10,8 @@ import { LockIcon } from '@twilio-paste/icons/esm/LockIcon'
 import { SuccessIcon } from '@twilio-paste/icons/esm/SuccessIcon'
 
 function IssueDetailTitle(): JSX.Element {
+  const { configuration } = useConfiguration()
+
   return (
     <Box
       as="header"
@@ -21,12 +24,14 @@ function IssueDetailTitle(): JSX.Element {
         <Flex hAlignContent={'right'}>
           <Tooltip text="Go to repo at github.com">
             <Text fontWeight={'fontWeightBold'} as={'p'} marginBottom={'space40'}>
-              <Anchor href="https://github.com/deeleman">
+              <Anchor href={configuration?.url || '#'}>
                 <Flex>
                   <Flex marginRight={'space10'}>
                     <GitIcon decorative />
                   </Flex>
-                  <Flex>deeleman/load-engine-foo</Flex>
+                  <Flex>
+                    {configuration?.username}/{configuration?.repository}
+                  </Flex>
                 </Flex>
               </Anchor>
             </Text>

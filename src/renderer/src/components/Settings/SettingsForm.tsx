@@ -1,22 +1,24 @@
-import { useRouter } from '@renderer/Router'
-import { Button } from '@twilio-paste/core/button'
-import { Box } from '@twilio-paste/core/box'
-import { Flex } from '@twilio-paste/core/flex'
-import { Paragraph } from '@twilio-paste/core/paragraph'
-import { Stack } from '@twilio-paste/core/stack'
+import { useConfiguration } from '@renderer/providers/configuration'
+import { useRouter } from '@renderer/providers/router'
 import { Anchor } from '@twilio-paste/core/anchor'
+import { Box } from '@twilio-paste/core/box'
+import { Button } from '@twilio-paste/core/button'
+import { Flex } from '@twilio-paste/core/flex'
 import { Heading } from '@twilio-paste/core/heading'
-import { Label } from '@twilio-paste/core/label'
 import { HelpText } from '@twilio-paste/core/help-text'
 import { Input } from '@twilio-paste/core/input'
-import { ShowIcon } from '@twilio-paste/icons/esm/ShowIcon'
+import { Label } from '@twilio-paste/core/label'
+import { Paragraph } from '@twilio-paste/core/paragraph'
+import { Stack } from '@twilio-paste/core/stack'
 import { HideIcon } from '@twilio-paste/icons/esm/HideIcon'
+import { ShowIcon } from '@twilio-paste/icons/esm/ShowIcon'
 import { useRef, useState } from 'react'
 
 function SettingsForm(): JSX.Element {
   const { navigate } = useRouter()
-  const [token, setToken] = useState('')
-  const [url, setURL] = useState('')
+  const { configuration, save } = useConfiguration()
+  const [token, setToken] = useState(configuration?.token || '')
+  const [url, setURL] = useState(configuration?.url || '')
   const [tokenVisible, setTokenVisible] = useState(false)
   const [tokenError, setTokenError] = useState(false)
   const [urlError, setURLError] = useState(false)
@@ -42,18 +44,22 @@ function SettingsForm(): JSX.Element {
     setIsLoading(true)
 
     try {
-      const [repository, user] = url.split('/').reverse()
+      const [repository, username] = url.split('/').reverse()
+      const isValid = await save({ url, token, username, repository })
 
-      // TODO
-      // await updateConfiguration({ url, token, user, repository })
-
-      navigate()
+      if (isValid) {
+        navigate('viewer')
+      } else {
+        setServerError(true)
+      }
     } catch {
       setServerError(true)
     } finally {
       setIsLoading(false)
     }
   }
+
+  const isFirstTime = !configuration?.token || !configuration?.url
 
   return (
     <Stack orientation={'vertical'} spacing={'space60'}>
@@ -71,7 +77,9 @@ function SettingsForm(): JSX.Element {
       ) : (
         <>
           <Heading as="h1" variant="heading10">
-            Please configure GitSquid
+            {isFirstTime
+              ? `Let's configure GitSquid for the first time!`
+              : 'Review your GitSquid configuration anytime'}
           </Heading>
           <Paragraph>
             Kindly enter the required Personal Access Token (PAT) and the URL of the public GitHub
@@ -142,9 +150,11 @@ function SettingsForm(): JSX.Element {
         )}
       </Box>
       <Flex hAlignContent={'between'} paddingTop={'space30'}>
-        <Button variant="secondary" onClick={() => navigate('viewer')} disabled={isLoading}>
-          Cancel and go back
-        </Button>
+        {!isFirstTime && (
+          <Button variant="secondary" onClick={() => navigate('viewer')} disabled={isLoading}>
+            Cancel and go back
+          </Button>
+        )}
         <Button variant="primary" onClick={submitHandler} loading={isLoading}>
           {isLoading ? 'Validating configuration' : 'Update configuration'}
         </Button>

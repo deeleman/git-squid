@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { MessageType } from '../preload/types'
+import ConfigurationManager from './ConfigurationManager'
 
 function createWindow(): void {
   // Create the browser window.
@@ -20,10 +22,22 @@ function createWindow(): void {
     }
   })
 
+  // Initialize the configuration manager
+  const configManager = new ConfigurationManager(ipcMain, mainWindow)
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+
+    configManager.broadcast()
+
+    configManager.onConfigurationUpdateRequest((configuration) => {
+      // TODO: Add a validation routine for validating new configs before persisting them
+      return true
+    })
   })
 
+  // Open windows using the system default window when
+  // requesting links with target=_blank, mailto...
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
@@ -51,9 +65,6 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
 

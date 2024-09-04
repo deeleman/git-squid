@@ -4,17 +4,17 @@ import { type Configuration, type GitSquidAPI, type Issues, MessageType } from '
 
 // Custom APIs for renderer
 const gitSquidAPI: GitSquidAPI = {
+  onConfiguration: (callback: (configuration: Configuration) => void): IpcRenderer =>
+    ipcRenderer.on(MessageType.Configuration, (e, data: Configuration) => callback(data)),
+  updateConfiguration: (configuration: Configuration): Promise<boolean> =>
+    ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration),
+
   onIssuesRefresh: (callback: (data: Issues) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.RefreshIssues, (_, data: Issues) => callback(data)),
   refreshIssues: (): Promise<unknown> => ipcRenderer.invoke(MessageType.TailIssues),
   markAsRead: (issueId: string): Promise<unknown> =>
-    ipcRenderer.invoke(MessageType.UpdateConfiguration, issueId),
-  onDisplayLoader: (callback: () => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.DisplayLoader, () => callback()),
-  onConfigurationUpdate: (callback: (configuration: Configuration) => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.UpdateConfiguration, (_, data: Configuration) => callback(data)),
-  updateConfiguration: (configuration: Configuration): Promise<unknown> =>
-    ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration),
+    ipcRenderer.invoke(MessageType.MarkAsRead, issueId),
+
   onError: (callback: (error: unknown) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.Error, (_, error: unknown) => callback(error))
 }

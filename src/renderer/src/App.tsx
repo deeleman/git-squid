@@ -1,4 +1,4 @@
-import { Route, Router } from './Router'
+import { Route, Router } from './providers/router'
 import Loader from './components/Loader'
 import Settings from './components/Settings'
 import Viewer from './components/Viewer'
