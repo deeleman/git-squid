@@ -5,6 +5,10 @@ import icon from '../../resources/icon.png?asset'
 import ConfigurationManager from './ConfigurationManager'
 import DataManager from './DataManager'
 
+// Create the data and configuration manager instances
+const configManager = new ConfigurationManager()
+const dataManager = new DataManager(configManager)
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -22,16 +26,12 @@ function createWindow(): void {
     }
   })
 
-  // Initialize the data and configuration manager
-  const configManager = new ConfigurationManager(mainWindow)
-  const dataManager = new DataManager(mainWindow, configManager)
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
 
-    // Emit config and issues data to renderer
-    configManager.broadcast()
-    dataManager.broadcast()
+    // Register created window to emit config and issues data to renderer
+    configManager.registerWindow(mainWindow)
+    dataManager.registerWindow(mainWindow)
 
     // Validates config update requests based on whether the new config is honored by GitHub
     configManager.onConfigurationUpdateRequest((configuration) => {
@@ -88,6 +88,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.

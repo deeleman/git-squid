@@ -1,10 +1,12 @@
-import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { resolve } from 'path'
+import { generateGitSquidKeysPlugin } from './plugins'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    envPrefix: 'SQUID_MAIN',
+    plugins: [externalizeDepsPlugin(), generateGitSquidKeysPlugin(command)],
     build: {
       copyPublicDir: true
     }
@@ -20,4 +22,4 @@ export default defineConfig({
     },
     plugins: [react()]
   }
-})
+}))

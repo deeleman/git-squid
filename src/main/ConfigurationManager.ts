@@ -1,20 +1,21 @@
 import { type BrowserWindow, ipcMain } from 'electron'
-import fs from 'fs'
-import path from 'path'
-import { app } from 'electron'
 import { type Configuration, MessageType } from '../preload/types'
+import FileManager from './FileManager'
 
 export default class ConfigurationManager {
   configuration: Configuration
 
-  private backupFilePath = path.join(app.getPath('userData'), 'gitsquid.conf')
+  private fileManager: FileManager
+
+  private browserWindow?: BrowserWindow
 
   private testingCallback?: (configuration: Configuration) => Promise<boolean> | boolean
 
-  constructor(private readonly browserWindow: BrowserWindow) {
+  constructor() {
+    this.fileManager = new FileManager('gitsquid.conf')
+
     try {
-      const configurationBackup = fs.readFileSync(this.backupFilePath, { encoding: 'utf-8' })
-      this.configuration = JSON.parse(configurationBackup) as Configuration
+      this.configuration = this.fileManager.read<Configuration>()
     } catch (e) {
       this.configuration = {
         repository: '',
@@ -29,7 +30,8 @@ export default class ConfigurationManager {
     )
   }
 
-  broadcast(): void {
+  registerWindow(browserWindow: BrowserWindow): void {
+    this.browserWindow = browserWindow
     this.browserWindow.webContents.send(MessageType.Configuration, this.configuration)
   }
 
@@ -44,7 +46,9 @@ export default class ConfigurationManager {
 
     if (isValid) {
       this.persist(configuration)
-      this.browserWindow.webContents.send(MessageType.Configuration, this.configuration)
+      if (this.browserWindow) {
+        this.browserWindow.webContents.send(MessageType.Configuration, this.configuration)
+      }
     }
 
     return isValid
@@ -61,8 +65,6 @@ export default class ConfigurationManager {
   private persist(configuration: Configuration): void {
     this.configuration = configuration
 
-    fs.writeFile(this.backupFilePath, JSON.stringify(configuration), (error) => {
-      if (error) console.error(error)
-    })
+    this.fileManager.write(configuration)
   }
 }

@@ -1,8 +1,7 @@
-import { app, type BrowserWindow, ipcMain } from 'electron'
-import fs from 'fs'
-import path from 'path'
+import { type BrowserWindow, ipcMain } from 'electron'
 import { type Configuration, Issue, type Issues, MessageType } from '../preload/types'
 import type ConfigurationManager from './ConfigurationManager'
+import FileManager from './FileManager'
 
 type ReadIssuesMap = {
   [url: string]: Record<string, boolean>
@@ -11,23 +10,25 @@ type ReadIssuesMap = {
 export default class DataManager {
   issues?: Issues
 
+  private fileManager: FileManager
+
   private readIssues: ReadIssuesMap
 
   private currentPage = 1
 
   private lastRead = new Date()
 
-  private issuesStoreFilePath = path.join(app.getPath('userData'), 'read.conf')
-
   private repositoryUrlRef: string
 
-  constructor(
-    private readonly browserWindow: BrowserWindow,
-    private readonly configManager: ConfigurationManager
-  ) {
+  private browserWindow?: BrowserWindow
+
+  constructor(private readonly configManager: ConfigurationManager) {
+    this.repositoryUrlRef = this.configManager.configuration.url
+
+    this.fileManager = new FileManager('read.conf', true)
+
     try {
-      const readIssuesBackup = fs.readFileSync(this.issuesStoreFilePath, { encoding: 'utf-8' })
-      this.readIssues = JSON.parse(readIssuesBackup) as ReadIssuesMap
+      this.readIssues = this.fileManager.read<ReadIssuesMap>()
     } catch (e) {
       this.readIssues = {
         [this.configManager.configuration.url]: {}
@@ -39,10 +40,10 @@ export default class DataManager {
     ipcMain.handle(MessageType.FetchIssues, (_, refresh?: boolean) =>
       this.fetchIssues(this.configManager.configuration, refresh)
     )
+  }
 
-    this.repositoryUrlRef = this.configManager.configuration.url
-
-    this.fetchIssues(this.configManager.configuration, true)
+  registerWindow(browserWindow: BrowserWindow): void {
+    this.browserWindow = browserWindow
   }
 
   async fetchIssues(configuration: Configuration, refresh?: boolean): Promise<boolean> {
@@ -79,7 +80,10 @@ export default class DataManager {
           this.currentPage = this.currentPage + 1
         }
 
-        this.broadcast()
+        if (Array.isArray(this.issues) && this.browserWindow) {
+          this.browserWindow.webContents.send(MessageType.Issues, this.issues)
+        }
+
         return true
       } else {
         throw new Error(`GitHub API returned a ${response.status} error`)
@@ -125,19 +129,10 @@ export default class DataManager {
     return Object.values<Issue>(mergedIssuesSet).sort((a, b) => b.id - a.id)
   }
 
-  broadcast(): void {
-    if (Array.isArray(this.issues)) {
-      this.browserWindow.webContents.send(MessageType.Issues, this.issues)
-      console.log(this.issues)
-    }
-  }
-
   markIssueAsRead(issueId: string): void {
     this.readIssues[this.configManager.configuration.url][issueId] = true
 
-    fs.writeFile(this.issuesStoreFilePath, JSON.stringify(this.readIssues), (error) => {
-      if (error) console.error(error)
-    })
+    this.fileManager.write(this.readIssues)
   }
 
   private formatDate(dateString: string): string {

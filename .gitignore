@@ -5,3 +5,4 @@ out
 *.log*
 SCHEMA.json
 EXAMPLE.json
+.env
