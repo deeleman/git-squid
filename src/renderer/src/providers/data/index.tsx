@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState
 } from 'react'
 
@@ -33,6 +34,8 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
   const [error, setError] = useState<string | undefined>()
   const [isComplete, setComplete] = useState(false)
   const gitSquidAPI = window.__gitSquid
+  const issueCount = useRef(0)
+  const hasRegisteredListener = useRef(false)
 
   const load = useCallback(
     (fetchNew?: boolean): void => {
@@ -67,20 +70,21 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
     })
   }
 
-  const onIssuesCallback = useCallback(
-    (updatedIssues: Issues) => {
-      if (issues && updatedIssues.length === issues.length) {
-        setComplete(true)
-      }
+  const onIssuesCallback = (updatedIssues: Issues): void => {
+    if (updatedIssues.length === issueCount.current) {
+      setComplete(true)
+    }
 
-      setIssues(updatedIssues)
-      setLoading(false)
-    },
-    [setComplete, setIssues, issues]
-  )
+    setIssues(updatedIssues)
+    issueCount.current = updatedIssues.length
+    setLoading(false)
+  }
 
   useEffect(() => {
-    gitSquidAPI.onIssues(onIssuesCallback)
+    if (!hasRegisteredListener.current) {
+      gitSquidAPI.onIssues((updatedIssues) => onIssuesCallback(updatedIssues))
+      hasRegisteredListener.current = true
+    }
   }, [])
 
   return (
