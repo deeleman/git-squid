@@ -6,7 +6,7 @@ function IssueDetailBody(props: { issue: Issue }): JSX.Element {
   const { issue } = props
 
   return (
-    <Box paddingY={'space100'} as="article">
+    <Box marginY={'space100'} as="article" overflowX={'auto'}>
       <MarkdownBlock>{issue.body}</MarkdownBlock>
     </Box>
   )
