@@ -31,8 +31,12 @@ function IssueDetail(props: { issue?: Issue }): JSX.Element {
             paddingY={'space50'}
           >
             <IssueDetailInfo issue={issue} />
-            <IssueDetailBody issue={issue} />
-            <IssueDetailFooter issue={issue} />
+            <Box position={'relative'}>
+              <Box position={'absolute'} right={0} left={0}>
+                <IssueDetailBody issue={issue} />
+                <IssueDetailFooter issue={issue} />
+              </Box>
+            </Box>
           </Box>
         </>
       )}
