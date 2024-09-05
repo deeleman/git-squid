@@ -10,17 +10,17 @@ type IssueListProps = {
   issues: Issues
   loading?: boolean
   onSelectIssue: (issue: Issue) => void
-  onInfiniteScroll: () => void
+  onScrollEnd: () => void
 }
 
 function IssueList(props: IssueListProps): JSX.Element {
-  const { issues, onSelectIssue, loading, onInfiniteScroll } = props
+  const { issues, onSelectIssue, loading, onScrollEnd } = props
   const loaderRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]): void => {
       if (entry.isIntersecting && !loading) {
-        onInfiniteScroll()
+        onScrollEnd()
       }
     })
 
@@ -33,18 +33,29 @@ function IssueList(props: IssueListProps): JSX.Element {
         observer.unobserve(loaderRef.current)
       }
     }
-  }, [loaderRef.current, loading, onInfiniteScroll])
+  }, [loaderRef.current, loading, onScrollEnd])
 
   return (
-    <Box display={'flex'} flexDirection={'column'} height={'100%'} overflow={'auto'}>
+    <Box
+      display={'flex'}
+      flexDirection={'column'}
+      height={'100%'}
+      overflow={'auto'}
+      minWidth={'300px'}
+      width={'300px'}
+    >
       {issues.map((issue) => (
         <Box
           key={issue.id}
+          minWidth={'300px'}
+          width={'300px'}
           borderBottomColor={'colorBorderWeak'}
           borderBottomWidth={'borderWidth10'}
           borderBottomStyle={'solid'}
           borderLeftColor={
-            issue.state === 'closed' ? 'colorBorderNewWeaker' : 'colorBorderSuccessWeak'
+            issue.state === 'closed' || issue.dateClosed
+              ? 'colorBorderNewWeaker'
+              : 'colorBorderSuccessWeak'
           }
           borderLeftWidth={'borderWidth30'}
           borderLeftStyle={'solid'}
@@ -80,14 +91,18 @@ function IssueList(props: IssueListProps): JSX.Element {
         flexGrow={'inherit'}
         height={'100%'}
       >
-        <Flex hAlignContent={'center'} vAlignContent={'center'} height={'80px'}>
-          {loading && (
+        <Flex hAlignContent={'center'} vAlignContent={'center'} paddingY={'space60'} width={'100%'}>
+          {loading ? (
             <Spinner
               color="colorTextPrimaryStrong"
               size="sizeIcon50"
               decorative={false}
               title="Loading"
             />
+          ) : (
+            <Text as="h4" fontSize={'fontSize20'} color={'colorTextWeaker'}>
+              No more issues to load
+            </Text>
           )}
         </Flex>
       </Box>

@@ -46,7 +46,10 @@ export default class DataManager {
     this.browserWindow = browserWindow
   }
 
-  async fetchIssues(configuration: Configuration, refresh?: boolean): Promise<boolean> {
+  async fetchIssues(
+    configuration: Configuration,
+    refresh?: boolean
+  ): Promise<{ success: boolean; error?: unknown }> {
     const { repository, token, username } = configuration
     const PAGE_ITEMS = 50
 
@@ -69,18 +72,26 @@ export default class DataManager {
 
       if (response.ok) {
         const responseJson = await response.json()
-        const newIssues = this.parseResponseIssues(responseJson)
-        this.lastRead = new Date()
 
-        // If the URL passed does not match the original URL ref stored
-        // we assume this is a new repository so current page and issues are reset.
+        // Before parsing data, we check if the URL passed does not match the original URL ref stored
+        // we assume this is a new repository so current page and url are reset and a new read tracking entry is created
         if (this.repositoryUrlRef !== configuration.url) {
           this.repositoryUrlRef = configuration.url
-          this.issues = newIssues
           this.currentPage = 1
-        // Otherwise we bump the current page unless we reach the recordset limit
-        } else if (newIssues.length === PAGE_ITEMS) {
-          this.issues = this.mergeAndSortIssues(newIssues)
+        }
+
+        // Prior to parse raw issues we ensure thre is an entry in the read issues dictionary for this url
+        if (!this.readIssues[this.repositoryUrlRef]) {
+          this.readIssues[this.repositoryUrlRef] = {}
+        }
+
+        const newIssues = this.parseResponseIssues(responseJson)
+        this.issues = this.mergeAndSortIssues(newIssues)
+        this.lastRead = new Date()
+
+        // Page index is bumped only when newly fetched items match the page size, which
+        // allows assuming there might still be more paginated records to fetch
+        if (newIssues.length === PAGE_ITEMS) {
           this.currentPage = this.currentPage + 1
         }
 
@@ -88,12 +99,13 @@ export default class DataManager {
           this.browserWindow.webContents.send(MessageType.Issues, this.issues)
         }
 
-        return true
+        return { success: true }
       } else {
-        throw new Error(`GitHub API returned a ${response.status} error`)
+        throw new Error(`The request to ${url} returned a ${response.status} error`)
       }
-    } catch {
-      return false
+    } catch (e) {
+      console.error(e)
+      return { success: false, error: e }
     }
   }
 

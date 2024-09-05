@@ -15,7 +15,8 @@ import {
 type DataContextApi = {
   issues?: Issues
   loading?: boolean
-  error?: unknown
+  error?: string
+  isComplete: boolean
   load: (fetchNew?: boolean) => void
   read: (issue: string | Issue) => void
 }
@@ -29,25 +30,27 @@ const DataContext = createContext<DataContextApi | undefined>(undefined)
 export function DataProvider(props: PropsWithChildren): JSX.Element {
   const [issues, setIssues] = useState<Issues>()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<unknown>()
+  const [error, setError] = useState<string | undefined>()
+  const [isComplete, setComplete] = useState(false)
   const gitSquidAPI = window.__gitSquid
 
   const load = useCallback(
     (fetchNew?: boolean): void => {
+      if (isComplete && !fetchNew) return
+
       setError(undefined)
 
       if (!loading) {
         setLoading(true)
-
+        console.log('fetchIssues')
         gitSquidAPI
           .fetchIssues(fetchNew)
-          .then((success) => {
+          .then(({ success, error }) => {
             if (!success) {
-              throw new Error('An unknown error occurred upon fetching data.')
+              throw new Error(`An unknown error occurred upon fetching data: ${error}`)
             }
           })
           .catch(setError)
-          .finally(() => setLoading(false))
       }
     },
     [loading, setLoading, setError]
@@ -65,12 +68,21 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
   }
 
   useEffect(() => {
-    gitSquidAPI.onIssues(setIssues)
-  }, [setIssues])
+    gitSquidAPI.onIssues((updatedIssues) => {
+      if (issues && updatedIssues.length === issues.length) {
+        setComplete(true)
+      }
 
-  const dataContextProps = { issues, loading, load, error, read }
+      setIssues(updatedIssues)
+      setLoading(false)
+    })
+  }, [setIssues, setLoading, issues])
 
-  return <DataContext.Provider value={dataContextProps}>{props.children}</DataContext.Provider>
+  return (
+    <DataContext.Provider value={{ issues, loading, load, error, read, isComplete }}>
+      {props.children}
+    </DataContext.Provider>
+  )
 }
 
 /**

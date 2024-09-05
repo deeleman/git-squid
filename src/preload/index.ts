@@ -9,7 +9,7 @@ const gitSquidAPI: GitSquidAPI = {
   updateConfiguration: (configuration: Configuration): Promise<boolean> =>
     ipcRenderer.invoke(MessageType.UpdateConfiguration, configuration),
 
-  fetchIssues: (refresh?: boolean): Promise<boolean> =>
+  fetchIssues: (refresh?: boolean): Promise<{ success: boolean; error?: unknown }> =>
     ipcRenderer.invoke(MessageType.FetchIssues, refresh),
   onIssues: (callback: (data: Issues) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.Issues, (_, data: Issues) => callback(data)),

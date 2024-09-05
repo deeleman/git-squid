@@ -6,7 +6,8 @@ import {
   useState,
   useEffect,
   useContext,
-  useMemo
+  useMemo,
+  useCallback
 } from 'react'
 
 /**
@@ -21,7 +22,7 @@ type ConfigurationContextApi = {
   /**
    * Informs whether the configuration information is already available or not.
    */
-  isReady: boolean
+  isReady?: boolean
   /**
    * Provides a "fire-and-forget" API for updating the configuration.
    * @param configuration The {@link Configuration} object meant to initialize or override the app configuration.
@@ -31,29 +32,31 @@ type ConfigurationContextApi = {
 
 const ConfigurationContext = createContext<ConfigurationContextApi | undefined>(undefined)
 
+const gitSquidAPI = window.__gitSquid
+
 /**
  * The `<ConfigurationProvider>` provides a context wrapper for managing the application
  * repository data and token information across all components and child providers.
  */
 export function ConfigurationProvider(props: PropsWithChildren): JSX.Element {
   const [configuration, setConfiguration] = useState<Configuration>()
-  const gitSquidAPI = window.__gitSquid
-
-  const save = (configuration: Configuration): Promise<boolean> =>
-    gitSquidAPI.updateConfiguration(configuration)
 
   const isReady = useMemo(() => {
-    return !!configuration && !!configuration.token && !!configuration.url
-  }, [configuration])
+    return !!configuration?.token && !!configuration?.url
+  }, [configuration?.token, configuration?.url])
+
+  const save = useCallback((configuration: Configuration): Promise<boolean> => {
+    return gitSquidAPI.updateConfiguration(configuration)
+  }, [])
 
   useEffect(() => {
-    gitSquidAPI.onConfiguration(setConfiguration)
+    gitSquidAPI.onConfiguration((configuration) => {
+      setConfiguration(configuration)
+    })
   }, [setConfiguration])
 
-  const configurationContextProps = { configuration, save, isReady }
-
   return (
-    <ConfigurationContext.Provider value={configurationContextProps}>
+    <ConfigurationContext.Provider value={{ configuration, save, isReady }}>
       {props.children}
     </ConfigurationContext.Provider>
   )

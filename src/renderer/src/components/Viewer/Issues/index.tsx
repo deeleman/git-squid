@@ -12,7 +12,7 @@ function Issues(): JSX.Element {
   const { issues, read, loading, load } = useData()
 
   const filteredIssues = useMemo(() => {
-    if (issues && keyword && keyword.length > 3) {
+    if (issues && keyword && keyword.length >= 3) {
       return issues?.filter((issue) => issue.title.includes(keyword))
     }
 
@@ -33,13 +33,13 @@ function Issues(): JSX.Element {
 
   return (
     <Flex grow maxHeight={'100vh'} vAlignContent={'stretch'}>
-      <Flex minWidth={'280px'} width={'320px'} height={'100vh'} vertical>
+      <Flex minWidth={'280px'} width={'280px'} height={'100vh'} vertical>
         <IssueNav issues={filteredIssues} onSearch={setKeyword} />
         <IssueList
           issues={filteredIssues}
           onSelectIssue={setSelectedIssue}
           loading={loading}
-          onInfiniteScroll={load}
+          onScrollEnd={load}
         />
       </Flex>
       <IssueDetail issue={selectedIssue} />

@@ -46,9 +46,6 @@ export default class ConfigurationManager {
 
     if (isValid) {
       this.persist(configuration)
-      if (this.browserWindow) {
-        this.browserWindow.webContents.send(MessageType.Configuration, this.configuration)
-      }
     }
 
     return isValid
@@ -64,6 +61,10 @@ export default class ConfigurationManager {
 
   private persist(configuration: Configuration): void {
     this.configuration = configuration
+
+    if (this.browserWindow) {
+      this.browserWindow.webContents.send(MessageType.Configuration, this.configuration)
+    }
 
     this.fileManager.write(configuration)
   }

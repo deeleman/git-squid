@@ -81,7 +81,7 @@ export interface GitSquidAPI {
   updateConfiguration: (configuration: Configuration) => Promise<boolean>
   onConfiguration: (callback: (configuration: Configuration) => void) => void
 
-  fetchIssues: (refresh?: boolean) => Promise<boolean>
+  fetchIssues: (refresh?: boolean) => Promise<{ success: boolean; error?: unknown }>
   onIssues: (callback: (issues: Issues) => void) => void
   readIssue: (issueId: string) => Promise<void>
 }
