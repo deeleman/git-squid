@@ -27,8 +27,8 @@ function IssueDetail(props: { issue?: Issue }): JSX.Element {
             flexDirection={'column'}
             height={'100%'}
             overflowY={'auto'}
-            marginX={'space80'}
-            marginY={'space50'}
+            paddingX={'space80'}
+            paddingY={'space50'}
           >
             <IssueDetailInfo issue={issue} />
             <IssueDetailBody issue={issue} />
