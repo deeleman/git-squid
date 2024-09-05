@@ -128,7 +128,7 @@ export default class DataManager {
       isLocked: item.locked,
       body: item.body,
       labels: item.labels.map((label) => (typeof label === 'string' ? label : label.name)),
-      read: item.id in this.readIssues[this.configManager.configuration.url]
+      read: item.id in this.readIssues[this.repositoryUrlRef]
     }))
   }
 
@@ -148,8 +148,12 @@ export default class DataManager {
 
   markIssueAsRead(issueId: string): void {
     this.readIssues[this.configManager.configuration.url][issueId] = true
-
     this.fileManager.write(this.readIssues)
+
+    const issue = this.issues?.find((issue) => issue.id === +issueId)
+    if (issue) {
+      issue.read = true // FIXME: Avoid mutating the object
+    }
   }
 
   private formatDate(dateString: string): string {

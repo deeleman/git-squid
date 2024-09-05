@@ -35,7 +35,7 @@ function createWindow(): void {
 
     // Validates config update requests based on whether the new config is honored by GitHub
     configManager.onConfigurationUpdateRequest((configuration) => {
-      return dataManager.fetchIssues(configuration, true)
+      return dataManager.fetchIssues(configuration)
     })
   })
 
