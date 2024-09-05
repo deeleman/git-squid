@@ -42,7 +42,7 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
 
       if (!loading) {
         setLoading(true)
-        console.log('fetchIssues')
+
         gitSquidAPI
           .fetchIssues(fetchNew)
           .then(({ success, error }) => {
