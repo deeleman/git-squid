@@ -1,7 +1,7 @@
 # GitSquid
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/946604ac-215a-4489-a890-9478e2a2112c" alt="GitSquid"/>
+  <img src="https://github.com/user-attachments/assets/946604ac-215a-4489-a890-9478e2a2112c" alt="GitSquid" width="160" />
 </p>
 
 GitSquid is a convenient and configurable desktop viewer for GitHub issues.
