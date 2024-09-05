@@ -9,7 +9,9 @@ export default class ConfigurationManager {
 
   private browserWindow?: BrowserWindow
 
-  private testingCallback?: (configuration: Configuration) => Promise<boolean> | boolean
+  private testingCallback?: (
+    configuration: Configuration
+  ) => Promise<{ success: boolean; error?: unknown }>
 
   constructor() {
     this.fileManager = new FileManager('gitsquid.conf')
@@ -36,24 +38,28 @@ export default class ConfigurationManager {
   }
 
   onConfigurationUpdateRequest(
-    testingCallback: (configuration: Configuration) => Promise<boolean> | boolean
+    testingCallback: (
+      configuration: Configuration
+    ) => Promise<{ success: boolean; error?: unknown }>
   ): void {
     this.testingCallback = testingCallback
   }
 
   async save(configuration: Configuration): Promise<boolean> {
-    const isValid = await this.testConfiguration(configuration)
+    const { success } = await this.testConfiguration(configuration)
 
-    if (isValid) {
+    if (success) {
       this.persist(configuration)
     }
 
-    return isValid
+    return success
   }
 
-  private async testConfiguration(configuration: Configuration): Promise<boolean> {
+  private async testConfiguration(
+    configuration: Configuration
+  ): Promise<{ success: boolean; error?: unknown }> {
     if (!this.testingCallback) {
-      return true
+      return { success: true }
     } else {
       return this.testingCallback(configuration)
     }

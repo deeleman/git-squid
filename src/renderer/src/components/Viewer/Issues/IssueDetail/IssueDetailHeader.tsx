@@ -10,7 +10,6 @@ import { GitIcon } from '@twilio-paste/icons/esm/GitIcon'
 import { LockIcon } from '@twilio-paste/icons/esm/LockIcon'
 import { SuccessIcon } from '@twilio-paste/icons/esm/SuccessIcon'
 import { ProcessInProgressIcon } from '@twilio-paste/icons/esm/ProcessInProgressIcon'
-import MarkdownBlock from './MarkdownBlock'
 
 function IssueDetailTitle(props: { issue: Issue }): JSX.Element {
   const { configuration } = useConfiguration()
