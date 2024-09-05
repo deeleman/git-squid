@@ -6,14 +6,10 @@
 
 GitSquid is a convenient and configurable desktop viewer for GitHub issues.
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
 ## Project Setup
 
 > [!WARNING]  
-> The minimum requirements for running this project, either on development or production mode, and its development scripts are `node v18.20.4` and `npm v.6.14.15`, or later versions. As a rule fo thumb the guidance is to use the latest [LTS versions](https://nodejs.org/).
+> The minimum requirements for running this project, either on development or production mode, and its development scripts are `node v18.20.4` and `npm v.8.19.2`, or later versions. As a rule of thumb the guidance is to use the latest [LTS versions](https://nodejs.org/).
 
 ### Installing dependencies
 
