@@ -56,6 +56,7 @@ function IssueList(props: IssueListProps): JSX.Element {
           }
           borderLeftWidth={'borderWidth30'}
           borderLeftStyle={'solid'}
+          overflowX={'clip'}
           paddingX={'space50'}
           paddingY={'space40'}
           cursor={'pointer'}
