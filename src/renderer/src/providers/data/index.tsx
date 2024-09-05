@@ -81,7 +81,7 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
 
   useEffect(() => {
     gitSquidAPI.onIssues(onIssuesCallback)
-  }, [onIssuesCallback])
+  }, [])
 
   return (
     <DataContext.Provider value={{ issues, loading, load, error, read, isComplete }}>
