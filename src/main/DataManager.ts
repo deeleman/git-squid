@@ -74,13 +74,14 @@ export default class DataManager {
         const responseJson = await response.json()
 
         // Before parsing data, we check if the URL passed does not match the original URL ref stored
-        // we assume this is a new repository so current page and url are reset and a new read tracking entry is created
+        // we assume this is a new repository so current page and url are reset same as current issues
         if (this.repositoryUrlRef !== configuration.url) {
           this.repositoryUrlRef = configuration.url
           this.currentPage = 1
+          this.issues = undefined
         }
 
-        // Prior to parse raw issues we ensure thre is an entry in the read issues dictionary for this url
+        // Prior to parse raw issues we ensure there is an entry in the read issues dictionary for this url
         if (!this.readIssues[this.repositoryUrlRef]) {
           this.readIssues[this.repositoryUrlRef] = {}
         }

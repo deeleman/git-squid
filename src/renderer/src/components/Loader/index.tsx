@@ -50,7 +50,7 @@ function Loader(): JSX.Element {
       ) : (
         <>
           <Heading variant="heading10" as="h1">
-            GitSquid is initializing...
+            GitSquid is loading your issues...
           </Heading>
           <Spinner
             color="colorTextPrimaryStrong"

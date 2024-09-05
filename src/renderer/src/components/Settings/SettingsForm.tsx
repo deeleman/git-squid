@@ -48,7 +48,7 @@ function SettingsForm(): JSX.Element {
       const isValid = await save({ url, token, username, repository })
 
       if (isValid) {
-        navigate('viewer')
+        navigate()
       } else {
         setServerError(true)
       }
