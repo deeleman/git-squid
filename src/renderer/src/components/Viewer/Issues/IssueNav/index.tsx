@@ -10,7 +10,7 @@ import { Stack } from '@twilio-paste/core/stack'
 import { Tooltip } from '@twilio-paste/core/tooltip'
 import { EditIcon } from '@twilio-paste/icons/esm/EditIcon'
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon'
-import { RefreshIcon } from "@twilio-paste/icons/esm/RefreshIcon";
+import { RefreshIcon } from '@twilio-paste/icons/esm/RefreshIcon'
 import { useMemo } from 'react'
 
 type IssueNavProps = {
