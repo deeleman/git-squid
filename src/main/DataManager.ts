@@ -48,16 +48,17 @@ export default class DataManager {
 
   async fetchIssues(configuration: Configuration, refresh?: boolean): Promise<boolean> {
     const { repository, token, username } = configuration
-
-    let url = `https://api.github.com/repos/${username}/${repository}/issues?per_page=50`
-
-    if (refresh) {
-      url = `${url}&since=${this.lastRead.toISOString()}&page=1`
-    } else {
-      url = `${url}&page=${this.currentPage}`
-    }
+    const PAGE_ITEMS = 50
 
     try {
+      let url = `https://api.github.com/repos/${username}/${repository}/issues?per_page=${PAGE_ITEMS}`
+
+      if (refresh && this.issues && this.issues.length > 0) {
+        url = `${url}&since=${this.lastRead.toISOString()}&page=1`
+      } else {
+        url = `${url}&page=${this.currentPage}`
+      }
+
       const response = await fetch(url, {
         headers: {
           Accept: 'application/vnd.github+json',
@@ -67,16 +68,19 @@ export default class DataManager {
       })
 
       if (response.ok) {
-        const newIssues = this.parseResponseIssues(await response.json())
-        this.issues = this.mergeAndSortIssues(newIssues)
+        const responseJson = await response.json()
+        const newIssues = this.parseResponseIssues(responseJson)
         this.lastRead = new Date()
 
         // If the URL passed does not match the original URL ref stored
-        // we assume this is a new repository so current page is reset.
-        if (this.repositoryUrlRef !== url) {
-          this.repositoryUrlRef = url
+        // we assume this is a new repository so current page and issues are reset.
+        if (this.repositoryUrlRef !== configuration.url) {
+          this.repositoryUrlRef = configuration.url
+          this.issues = newIssues
           this.currentPage = 1
-        } else {
+        // Otherwise we bump the current page unless we reach the recordset limit
+        } else if (newIssues.length === PAGE_ITEMS) {
+          this.issues = this.mergeAndSortIssues(newIssues)
           this.currentPage = this.currentPage + 1
         }
 
@@ -105,7 +109,7 @@ export default class DataManager {
       assignee: item.assignee?.login,
       assigneeURL: item.assignee?.html_url,
       dateOpened: this.formatDate(item.created_at),
-      dateClosed: this.formatDate(item.closed_at),
+      dateClosed: item.closed_at ? this.formatDate(item.closed_at) : undefined,
       title: item.title,
       state: item.state,
       isLocked: item.locked,

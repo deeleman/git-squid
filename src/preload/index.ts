@@ -13,7 +13,7 @@ const gitSquidAPI: GitSquidAPI = {
     ipcRenderer.invoke(MessageType.FetchIssues, refresh),
   onIssues: (callback: (data: Issues) => void): IpcRenderer =>
     ipcRenderer.on(MessageType.Issues, (_, data: Issues) => callback(data)),
-  readIssue: (issueId: string): Promise<void> => ipcRenderer.invoke(MessageType.ReadIssue, issueId),
+  readIssue: (issueId: string): Promise<void> => ipcRenderer.invoke(MessageType.ReadIssue, issueId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

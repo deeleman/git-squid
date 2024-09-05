@@ -1,8 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Issue } from '@preload/types'
 import { Badge } from '@twilio-paste/core/badge'
 import { Box } from '@twilio-paste/core/box'
 
-function IssueDetailFooter(): JSX.Element {
-  return (
+function getBadgeColor(index: number): any {
+  if (index % 4 === 0) return 'neutral'
+  if (index % 3 === 0) return 'warning'
+  if (index % 2 === 0) return 'success'
+  return 'new' as any
+}
+
+function IssueDetailFooter(props: { issue: Issue }): JSX.Element {
+  const { issue } = props
+
+  return issue.labels ? (
     <Box
       display="flex"
       columnGap="space40"
@@ -10,19 +21,14 @@ function IssueDetailFooter(): JSX.Element {
       flexWrap="wrap"
       paddingBottom={'space100'}
     >
-      <Badge as="span" size="small" variant="neutral">
-        Neutral
-      </Badge>
-      <Badge as="span" size="small" variant="warning">
-        Warning
-      </Badge>
-      <Badge as="span" size="small" variant="success">
-        Success
-      </Badge>
-      <Badge as="span" size="small" variant="new">
-        New
-      </Badge>
+      {issue.labels.map((label, index) => (
+        <Badge key={label} as="span" size="small" variant={getBadgeColor(index)}>
+          {label}
+        </Badge>
+      ))}
     </Box>
+  ) : (
+    <></>
   )
 }
 

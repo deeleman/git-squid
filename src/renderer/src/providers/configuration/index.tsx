@@ -1,5 +1,13 @@
 import { type Configuration } from '@preload/types'
-import { createContext, PropsWithChildren, JSX, useState, useEffect, useContext } from 'react'
+import {
+  createContext,
+  PropsWithChildren,
+  JSX,
+  useState,
+  useEffect,
+  useContext,
+  useMemo
+} from 'react'
 
 /**
  * The public API of the {@link ConfigurationProvider} context element.
@@ -10,6 +18,10 @@ type ConfigurationContextApi = {
    * previously by the user or `undefined` if none.
    */
   configuration?: Configuration
+  /**
+   * Informs whether the configuration information is already available or not.
+   */
+  isReady: boolean
   /**
    * Provides a "fire-and-forget" API for updating the configuration.
    * @param configuration The {@link Configuration} object meant to initialize or override the app configuration.
@@ -30,11 +42,15 @@ export function ConfigurationProvider(props: PropsWithChildren): JSX.Element {
   const save = (configuration: Configuration): Promise<boolean> =>
     gitSquidAPI.updateConfiguration(configuration)
 
+  const isReady = useMemo(() => {
+    return !!configuration && !!configuration.token && !!configuration.url
+  }, [configuration])
+
   useEffect(() => {
     gitSquidAPI.onConfiguration(setConfiguration)
   }, [setConfiguration])
 
-  const configurationContextProps = { configuration, save }
+  const configurationContextProps = { configuration, save, isReady }
 
   return (
     <ConfigurationContext.Provider value={configurationContextProps}>

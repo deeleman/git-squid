@@ -1,6 +1,5 @@
 import squidIcon from '@renderer/assets/squid-icon.svg'
-import { useConfiguration } from '@renderer/providers/configuration'
-import { useRouter } from '@renderer/providers/router'
+import { useData, useConfiguration, useRouter } from '@renderer/providers'
 import { Box } from '@twilio-paste/core/dist/box'
 import { Flex } from '@twilio-paste/core/flex'
 import { Heading } from '@twilio-paste/core/heading'
@@ -8,16 +7,19 @@ import { Spinner } from '@twilio-paste/core/spinner'
 import { useEffect } from 'react'
 
 function Loader(): JSX.Element {
-  const { configuration } = useConfiguration()
+  const { configuration, isReady } = useConfiguration()
+  const { load, issues, loading } = useData()
   const { navigate } = useRouter()
 
   useEffect(() => {
-    if (configuration && (!configuration.token || !configuration.url)) {
+    if (configuration && !isReady) {
       navigate('settings')
+    } else if (Array.isArray(issues) && !loading) {
+      navigate('viewer')
     } else {
-      navigate('viewer') // TODO: Validate that there is data available before redirecting
+      load()
     }
-  }, [configuration, navigate])
+  }, [configuration, isReady, navigate, load, issues, loading])
 
   return (
     <Flex

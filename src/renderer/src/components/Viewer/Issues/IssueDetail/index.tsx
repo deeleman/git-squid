@@ -1,10 +1,13 @@
+import type { Issue } from '@preload/types'
 import { Box } from '@twilio-paste/core/box'
 import IssueDetailBody from './IssueDetailBody'
 import IssueDetailFooter from './IssueDetailFooter'
 import IssueDetailHeader from './IssueDetailHeader'
 import IssueDetailInfo from './IssueDetailInfo'
 
-function IssueDetail(): JSX.Element {
+function IssueDetail(props: { issue?: Issue }): JSX.Element {
+  const { issue } = props
+
   return (
     <Box
       display={'flex'}
@@ -16,20 +19,24 @@ function IssueDetail(): JSX.Element {
       borderLeftWidth={'borderWidth10'}
       borderLeftStyle={'solid'}
     >
-      <IssueDetailHeader />
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        width={'100%'}
-        height={'100%'}
-        overflow={'auto'}
-        paddingX={'space80'}
-        paddingY={'space50'}
-      >
-        <IssueDetailInfo />
-        <IssueDetailBody />
-        <IssueDetailFooter />
-      </Box>
+      {issue && (
+        <>
+          <IssueDetailHeader issue={issue} />
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            width={'100%'}
+            height={'100%'}
+            overflow={'auto'}
+            paddingX={'space80'}
+            paddingY={'space50'}
+          >
+            <IssueDetailInfo issue={issue} />
+            <IssueDetailBody issue={issue} />
+            <IssueDetailFooter issue={issue} />
+          </Box>
+        </>
+      )}
     </Box>
   )
 }

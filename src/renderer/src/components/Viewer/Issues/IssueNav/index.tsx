@@ -1,4 +1,5 @@
-import { useConfiguration } from '@renderer/providers/configuration'
+import type { Issues } from '@preload/types'
+import { useConfiguration } from '@renderer/providers'
 import { Badge } from '@twilio-paste/core/badge'
 import { Box } from '@twilio-paste/core/box'
 import { Flex } from '@twilio-paste/core/flex'
@@ -8,9 +9,20 @@ import { Stack } from '@twilio-paste/core/stack'
 import { Tooltip } from '@twilio-paste/core/tooltip'
 import { EditIcon } from '@twilio-paste/icons/esm/EditIcon'
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon'
+import { useMemo } from 'react'
 
-function IssueNav(): JSX.Element {
+type IssueNavProps = {
+  issues: Issues
+  onSearch: (keyword: string) => void
+}
+
+function IssueNav(props: IssueNavProps): JSX.Element {
   const { configuration } = useConfiguration()
+  const { issues, onSearch } = props
+
+  const unreadIssues = useMemo(() => {
+    return issues.filter((issue) => !issue.read).length
+  }, [issues])
 
   return (
     <Box
@@ -26,20 +38,17 @@ function IssueNav(): JSX.Element {
       <Stack orientation={'vertical'} spacing={'space60'}>
         <Flex as="header" vAlignContent={'center'} paddingTop={'space60'}>
           <Heading as="h2" variant="heading40" marginBottom="space0">
-            GitHub Issues
+            {issues.length} GitHub Issues
           </Heading>
-          <Flex marginLeft={'space40'}>
-            <Tooltip text="View your 125 unread issues" placement="auto">
-              <Badge
-                as="button"
-                size="small"
-                variant="notification_counter"
-                onClick={(): void => alert('Not implemented')}
-              >
-                99+
-              </Badge>
-            </Tooltip>
-          </Flex>
+          {unreadIssues > 0 && (
+            <Flex marginLeft={'space40'}>
+              <Tooltip text={`View your ${unreadIssues} unread issues`} placement="auto">
+                <Badge as="span" size="small" variant="notification_counter">
+                  {unreadIssues > 99 ? '+99' : unreadIssues}
+                </Badge>
+              </Tooltip>
+            </Flex>
+          )}
           <Flex grow hAlignContent={'right'}>
             <Tooltip text="Create new issue" placement="auto">
               <Badge
@@ -57,7 +66,7 @@ function IssueNav(): JSX.Element {
           name="filter"
           type="search"
           placeholder="Filter by keyword"
-          onChange={(): void => {}}
+          onChange={(e): void => onSearch(e.target.value || '')}
           insertAfter={<SearchIcon decorative size="sizeIcon20" />}
         />
       </Stack>

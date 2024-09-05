@@ -23,7 +23,8 @@ header {
 
 header button,
 header a,
-header span[data-paste-element="ICON"] {
+header span[data-paste-element="ICON"],
+header span[data-paste-element="BADGE"] {
   -webkit-app-region: no-drag;
 }
 
