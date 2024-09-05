@@ -25,11 +25,10 @@ function IssueDetail(props: { issue?: Issue }): JSX.Element {
           <Box
             display={'flex'}
             flexDirection={'column'}
-            width={'100%'}
             height={'100%'}
-            overflow={'auto'}
-            paddingX={'space80'}
-            paddingY={'space50'}
+            overflowY={'auto'}
+            marginX={'space80'}
+            marginY={'space50'}
           >
             <IssueDetailInfo issue={issue} />
             <IssueDetailBody issue={issue} />

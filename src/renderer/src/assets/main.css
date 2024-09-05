@@ -32,3 +32,9 @@ header a {
   /* Overrides Paste's default theme */
   text-decoration: none!important;
 }
+
+article img {
+  max-width: 50vw;
+  display: block;
+}
+

@@ -45,7 +45,6 @@ function IssueList(props: IssueListProps): JSX.Element {
     >
       {issues.map((issue) => (
         <Box
-          overflowX={'clip'}
           key={issue.id}
           borderBottomColor={'colorBorderWeak'}
           borderBottomWidth={'borderWidth10'}

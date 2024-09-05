@@ -3,7 +3,7 @@ import remarkGfm from 'remark-gfm'
 
 function MarkdownBlock(props: { children: string | null | undefined }): JSX.Element {
   return (
-    <Markdown skipHtml disallowedElements={['img']} remarkPlugins={[remarkGfm]}>
+    <Markdown skipHtml disallowedElements={[]} remarkPlugins={[remarkGfm]}>
       {props.children}
     </Markdown>
   )
