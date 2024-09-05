@@ -33,7 +33,7 @@ function Issues(): JSX.Element {
 
   return (
     <Flex grow maxHeight={'100vh'} vAlignContent={'stretch'}>
-      <Flex minWidth={'280px'} width={'280px'} height={'100vh'} vertical>
+      <Flex minWidth={'300px'} height={'100vh'} vertical>
         <IssueNav
           issues={filteredIssues}
           onSearch={setKeyword}

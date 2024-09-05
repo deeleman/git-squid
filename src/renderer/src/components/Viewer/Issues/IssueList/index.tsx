@@ -41,14 +41,11 @@ function IssueList(props: IssueListProps): JSX.Element {
       flexDirection={'column'}
       height={'100%'}
       overflow={'auto'}
-      minWidth={'300px'}
       width={'300px'}
     >
       {issues.map((issue) => (
         <Box
           key={issue.id}
-          minWidth={'300px'}
-          width={'300px'}
           borderBottomColor={'colorBorderWeak'}
           borderBottomWidth={'borderWidth10'}
           borderBottomStyle={'solid'}

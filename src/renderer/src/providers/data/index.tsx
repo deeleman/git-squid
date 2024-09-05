@@ -1,12 +1,12 @@
 import type { Issue, Issues } from '@preload/types'
 import {
   createContext,
-  PropsWithChildren,
   JSX,
-  useState,
-  useEffect,
+  PropsWithChildren,
+  useCallback,
   useContext,
-  useCallback
+  useEffect,
+  useState
 } from 'react'
 
 /**
@@ -67,16 +67,21 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
     })
   }
 
-  useEffect(() => {
-    gitSquidAPI.onIssues((updatedIssues) => {
+  const onIssuesCallback = useCallback(
+    (updatedIssues: Issues) => {
       if (issues && updatedIssues.length === issues.length) {
         setComplete(true)
       }
 
       setIssues(updatedIssues)
       setLoading(false)
-    })
-  }, [setIssues, setLoading, issues])
+    },
+    [setComplete, setIssues, issues]
+  )
+
+  useEffect(() => {
+    gitSquidAPI.onIssues(onIssuesCallback)
+  }, [onIssuesCallback])
 
   return (
     <DataContext.Provider value={{ issues, loading, load, error, read, isComplete }}>
