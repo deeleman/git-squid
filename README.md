@@ -11,15 +11,15 @@
 
 
 ## Key Features
-- **Effortless Configuration:** GitSquid provides a visual interface that allows you to easily configure and update your personal token and repositories to monitor. No more hassle with manual setups – everything is streamlined for convenience from the first time you open the application.
+- **Effortless Configuration:** GitSquid provides a visual interface that allows you to easily configure and update your personal token and monitored repository. No more hassle with manual setups – everything is streamlined for convenience from the first time you open the application.
 
-- **Advanced Encryption:** We prioritize your privacy. GitSquid uses AES-256 symmetric encryption to securely persist all your personal data and browsing history, ensuring that your sensitive information remains safe, both during usage and after.
+- **Advanced Encryption:** Your privacy is a top priority and that's why GitSquid uses AES-256 symmetric encryption to securely persist all your personal data and browsing history, ensuring that your sensitive information remains safe, both during usage and after.
 
-- **Responsive data fetching** GitSquid keeps track of your viewing progress and will fetch additional content whenever availabel as you scroll the issues list. Moreover, you can ping the GitHub services anymore to also fetch the latest issues created during your session.
+- **Responsive data fetching** GitSquid keeps track of your viewing progress and will fetch additional content whenever available as you scroll the issues list. Moreover, you can ping the GitHub services anytime to also fetch the latest issues created during your session.
 
-- **Persistent Issue Tracking:** With our app, you'll never lose track of what you’ve read. GitSquid keeps track of read issues, even after you close the app, offering a seamless experience when you return. It’s designed for a better user experience, reducing redundant work and improving focus.
+- **Persistent Issue Tracking:** You'll never lose track of what you’ve read! GitSquid keeps track of read issues, even after you close the app, offering a seamless experience when you return. It’s designed for a better user experience, reducing redundant work and improving focus.
 
-- **Powerful Filtering and Metadata:** GitSquid's advanced UI allows you to not only view issues but also filter them by keyword and examine detailed metadata. Whether you're searching for specific issues or need an overview of the project’s health, RepoGuard provides everything you need at your fingertips.
+- **Powerful Filtering and Metadata:** GitSquid's advanced UI allows you to not only view issues but also filter them by keyword and examine detailed metadata. Whether you're searching for specific issues or need an overview of the project’s health, GitSquid provides everything you need at your fingertips.
 
 - **Markdown and Media Support:** Issues are rendered with full Markdown support, and even include user-uploaded images to keep full consistency with the information available in GitHub.
 
