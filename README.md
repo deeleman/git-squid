@@ -4,7 +4,7 @@
   <img src="https://github.com/user-attachments/assets/946604ac-215a-4489-a890-9478e2a2112c" alt="GitSquid" width="160" />
 </p>
 
-Introducing GitSquid – the ultimate desktop application for developers and project managers looking to monitor and manage repositories with ease and security. Designed with cutting-edge features, GitSquid not only enhances productivity but also ensures that your personal data and usage history are fully protected. With an intuitive interface and robust functionality, managing repository issues has never been this simple or secure.
+**Introducing GitSquid** – the ultimate desktop application for developers and project managers looking to monitor and manage repositories with ease and security. Designed with cutting-edge features, GitSquid not only enhances productivity but also ensures that your personal data and usage history are fully protected. With an intuitive interface and robust functionality, managing repository issues has never been this simple or secure.
 
 ## Key Features
 - **Effortless Configuration:** GitSquid provides a visual interface that allows you to easily configure and update your personal token and repositories to monitor. No more hassle with manual setups – everything is streamlined for convenience from the first time you open the application.
@@ -63,6 +63,8 @@ $ yarn build:linux
 
 Here's a look at the upcoming enhancements and fixes planned for GitSquid to ensure it remains a powerful and reliable tool for repository management:
 
+- **Integrating a packaging manager:** A smooth experience upon installing and executing the application as an end-user is top of mind at this moment, enhancing product distribution and branding with actual icons depicting the product identity.
+- 
 - **Adding Unit Tests:** Comprehensive unit tests will be implemented across the application to ensure each individual component functions correctly and consistently, increasing overall stability.
 
 - **Adding End-to-End (E2E) Tests:** To further enhance the reliability of GitSquid, there is a plan to introduce E2E tests to simulate real user interactions. This will allow catching issues before they impact users and ensure a seamless experience.
