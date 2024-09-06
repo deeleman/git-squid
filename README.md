@@ -6,7 +6,8 @@
 
 **Introducing GitSquid** – the ultimate desktop application for developers and project managers looking to monitor and manage repositories with ease and security. Designed with cutting-edge features, GitSquid not only enhances productivity but also ensures that your personal data and usage history are fully protected. With an intuitive interface and robust functionality, managing repository issues has never been this simple or secure.
 
-![Screenshot 2024-09-06 at 02 15 38](https://github.com/user-attachments/assets/13ba0c53-49f9-4b26-814a-93b6f014bd93)
+<img width="1450" alt="Screenshot 2024-09-06 at 02 32 27" src="https://github.com/user-attachments/assets/8e942ebb-7a0b-4f0b-b7c7-fa9517f745d5">
+
 
 
 ## Key Features
