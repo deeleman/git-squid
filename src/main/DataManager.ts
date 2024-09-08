@@ -5,7 +5,7 @@ import type ConfigurationManager from './ConfigurationManager'
 import FileManager from './FileManager'
 
 type ReadIssuesMap = {
-  [url: string]: Record<string, boolean>
+  [url: string]: Record<string, boolean | Date> & { lastUpdated: Date }
 }
 
 const PAGE_ITEMS = 50
@@ -24,12 +24,20 @@ export default class DataManager {
 
     try {
       this.readIssues = this.fileManager.read<ReadIssuesMap>()
-      Object.keys(this.readIssues).forEach((key) => (this.issuesMap[key] = {}))
+      Object.keys(this.readIssues).forEach((key) => {
+        if (key !== 'lastUpdated') {
+          this.issuesMap[key] = {}
+        }
+      })
     } catch (e) {
       this.issuesMap[this.configManager.configuration.url] = {}
       this.readIssues = {
-        [this.configManager.configuration.url]: {}
+        [this.configManager.configuration.url]: {
+          lastUpdated: new Date()
+        }
       }
+
+      this.fileManager.write(this.readIssues)
     }
 
     ipcMain.handle(MessageType.ReadIssue, (_, issueId: string) => this.markIssueAsRead(issueId))
@@ -76,7 +84,9 @@ export default class DataManager {
 
         // Prior to parse raw issues we ensure there is an entry in the read issues dictionary for this url
         if (url && !this.readIssues[url]) {
-          this.readIssues[url] = {}
+          this.readIssues[url] = {
+            lastUpdated: new Date()
+          }
         }
 
         const newIssues = this.parseResponseIssues(responseJson, url)
@@ -92,6 +102,8 @@ export default class DataManager {
           }
           this.browserWindow.webContents.send(MessageType.Issues, this.issuesMap)
         }
+
+        this.readIssues[url].lastUpdated = new Date()
 
         return { success: true }
       } else {
@@ -133,7 +145,10 @@ export default class DataManager {
       body: item.body,
       labels: item.labels.map((label) => (typeof label === 'string' ? label : label.name)),
       read: item.id in this.readIssues[url],
-      isPullRequest: !!item.pull_request // GitHub's REST API considers every pull request an issue, so we flag those
+      isPullRequest: !!item.pull_request, // GitHub's REST API considers every pull request an issue, so we flag those
+      isNew:
+        new Date(item.created_at).getMilliseconds() >
+        new Date(this.readIssues[url].lastUpdated).getMilliseconds()
     }))
   }
 

@@ -1,4 +1,5 @@
 import type { Issue, Issues } from '@preload/types'
+import { Badge } from '@twilio-paste/core/badge'
 import { Box } from '@twilio-paste/core/box'
 import { Flex } from '@twilio-paste/core/flex'
 import { Spinner } from '@twilio-paste/core/spinner'
@@ -48,7 +49,7 @@ function IssueList(props: IssueListProps): JSX.Element {
         return {
           ref: loadOnScrollRef
         }
-      } else if (issues.length <= SCROLL_BUFFER && index === SCROLL_BUFFER - 1) {
+      } else if (issues.length <= SCROLL_BUFFER && index === issues.length - 1) {
         return {
           ref: loadOnScrollRef
         }
@@ -106,9 +107,20 @@ function IssueList(props: IssueListProps): JSX.Element {
             >
               {issue.title}
             </Text>
-            <Text as="p" fontSize={'fontSize20'} color={'colorTextIcon'}>
-              Opened on {issue.dateOpened} by {issue.author}
-            </Text>
+            <Flex hAlignContent={'between'}>
+              <Flex grow>
+                <Text as="p" fontSize={'fontSize20'} color={'colorTextIcon'}>
+                  Opened on {issue.dateOpened} by {issue.author}
+                </Text>
+              </Flex>
+              {issue.isNew && (
+                <Flex>
+                  <Badge variant="decorative30" as="span" size="small">
+                    NEW
+                  </Badge>
+                </Flex>
+              )}
+            </Flex>
           </Stack>
         </Box>
       ))}

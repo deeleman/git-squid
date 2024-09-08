@@ -68,6 +68,7 @@ export type Issue = {
   labels?: string[]
   read: boolean
   isPullRequest: boolean
+  isNew?: boolean
 }
 
 /**
