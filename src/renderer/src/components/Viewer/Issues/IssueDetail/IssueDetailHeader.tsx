@@ -15,7 +15,7 @@ import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon'
 import { useData } from '@renderer/providers'
 import { parseURL } from '@renderer/helpers'
 
-function IssueDetailTitle(props: { issue: Issue }): JSX.Element {
+function IssueDetailTitle(props: { issue?: Issue }): JSX.Element {
   const { configuration, swapURL } = useConfiguration()
   const { repositoryURLs, loading } = useData()
   const urlsMenu = useMenuState()
@@ -73,44 +73,46 @@ function IssueDetailTitle(props: { issue: Issue }): JSX.Element {
             </Menu>
           </Box>
         </Flex>
-        <Flex grow vAlignContent={'bottom'}>
-          <Heading as="h3" variant="heading20" marginBottom="space0">
-            <Flex vAlignContent={'center'}>
-              {issue.isLocked && (
-                <Tooltip text="This issue is locked">
+        {issue && (
+          <Flex grow vAlignContent={'bottom'}>
+            <Heading as="h3" variant="heading20" marginBottom="space0">
+              <Flex vAlignContent={'center'}>
+                {issue.isLocked && (
+                  <Tooltip text="This issue is locked">
+                    <Flex marginRight={'space30'} marginTop={'space20'} minWidth={'24px'}>
+                      <LockIcon
+                        decorative={false}
+                        size={'sizeIcon40'}
+                        title="Issue closed"
+                        color={'colorTextIcon'}
+                      />
+                    </Flex>
+                  </Tooltip>
+                )}
+                <Tooltip text={issue.state === 'open' ? 'Open issue' : 'Closed issue'}>
                   <Flex marginRight={'space30'} marginTop={'space20'} minWidth={'24px'}>
-                    <LockIcon
-                      decorative={false}
-                      size={'sizeIcon40'}
-                      title="Issue closed"
-                      color={'colorTextIcon'}
-                    />
+                    {issue.state === 'open' ? (
+                      <ProcessInProgressIcon
+                        decorative={false}
+                        size={'sizeIcon60'}
+                        title="Open issue"
+                        color={'colorTextIconSuccess'}
+                      />
+                    ) : (
+                      <SuccessIcon
+                        decorative={false}
+                        size={'sizeIcon40'}
+                        title="Issue closed"
+                        color={'colorTextInverseNew'}
+                      />
+                    )}
                   </Flex>
                 </Tooltip>
-              )}
-              <Tooltip text={issue.state === 'open' ? 'Open issue' : 'Closed issue'}>
-                <Flex marginRight={'space30'} marginTop={'space20'} minWidth={'24px'}>
-                  {issue.state === 'open' ? (
-                    <ProcessInProgressIcon
-                      decorative={false}
-                      size={'sizeIcon60'}
-                      title="Open issue"
-                      color={'colorTextIconSuccess'}
-                    />
-                  ) : (
-                    <SuccessIcon
-                      decorative={false}
-                      size={'sizeIcon40'}
-                      title="Issue closed"
-                      color={'colorTextInverseNew'}
-                    />
-                  )}
-                </Flex>
-              </Tooltip>
-              <Flex>{issue.title.replaceAll('`', '')}</Flex>
-            </Flex>
-          </Heading>
-        </Flex>
+                <Flex>{issue.title.replaceAll('`', '')}</Flex>
+              </Flex>
+            </Heading>
+          </Flex>
+        )}
       </Flex>
     </Box>
   )

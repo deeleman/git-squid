@@ -11,7 +11,7 @@ import { Tooltip } from '@twilio-paste/core/tooltip'
 import { EditIcon } from '@twilio-paste/icons/esm/EditIcon'
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon'
 import { RefreshIcon } from '@twilio-paste/icons/esm/RefreshIcon'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 
 type IssueNavProps = {
   issues: Issues
@@ -23,10 +23,16 @@ type IssueNavProps = {
 function IssueNav(props: IssueNavProps): JSX.Element {
   const { configuration } = useConfiguration()
   const { issues, loading, onSearch, onRefresh } = props
+  const keywordRef = useRef('')
 
   const unreadIssues = useMemo(() => {
     return issues.filter((issue) => !issue.read).length
   }, [issues])
+
+  const onSearchQuery = (query: string): void => {
+    keywordRef.current = query
+    onSearch(query)
+  }
 
   return (
     <Box
@@ -42,7 +48,7 @@ function IssueNav(props: IssueNavProps): JSX.Element {
       <Stack orientation={'vertical'} spacing={'space60'}>
         <Flex as="header" vAlignContent={'center'} paddingTop={'space60'}>
           <Heading as="h2" variant="heading40" marginBottom="space0">
-            {issues.length} GitHub Issues
+            {issues.length ? `${issues.length} GitHub Issues` : 'No GitHub issues found!'}
           </Heading>
           {unreadIssues > 0 && (
             <Flex marginLeft={'space40'}>
@@ -73,8 +79,9 @@ function IssueNav(props: IssueNavProps): JSX.Element {
               type="search"
               placeholder="Filter by keyword"
               autoFocus
-              onChange={(e): void => onSearch(e.target.value || '')}
+              onChange={(e): void => onSearchQuery(e.target.value || '')}
               insertBefore={<SearchIcon decorative size="sizeIcon20" />}
+              disabled={issues.length === 0 && keywordRef.current === ''}
             />
           </Flex>
           <Tooltip text="Refresh issues" placement="auto">

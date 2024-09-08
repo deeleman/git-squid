@@ -41,12 +41,16 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
 
   const hasRegisteredListener = useRef(false)
 
-  const [issues, isComplete] = useMemo(() => {
+  const [issuesByUrl, isComplete] = useMemo(() => {
     const url = configuration?.url
     return url && issuesMap && url in issuesMap
       ? [issuesMap[url]?.issues || [], issuesMap[url]?.isComplete]
       : [undefined, false]
   }, [issuesMap, configuration?.url])
+
+  const issues = useMemo(() => {
+    return issuesByUrl?.filter((issue) => !issue.isPullRequest)
+  }, [issuesByUrl])
 
   const repositoryURLs = useMemo(() => {
     return Object.keys(issuesMap)
