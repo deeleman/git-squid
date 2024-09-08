@@ -4,7 +4,7 @@ import { Flex } from '@twilio-paste/core/flex'
 import { Spinner } from '@twilio-paste/core/spinner'
 import { Stack } from '@twilio-paste/core/stack'
 import { Text } from '@twilio-paste/core/text'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 type IssueListProps = {
   issues: Issues
@@ -14,9 +14,15 @@ type IssueListProps = {
   onScrollEnd: () => void
 }
 
+/**
+ * Sets the amount of issue items before the end of the dataset where the infinite scrolling logic
+ * must be triggered in order to generate the impression of infinite scrolling.
+ */
+const SCROLL_BUFFER = 10
+
 function IssueList(props: IssueListProps): JSX.Element {
   const { issues, onSelectIssue, loading, onScrollEnd, selectedIssue } = props
-  const loaderRef = useRef<HTMLElement>(null)
+  const loadOnScrollRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]): void => {
@@ -25,16 +31,33 @@ function IssueList(props: IssueListProps): JSX.Element {
       }
     })
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current)
+    if (loadOnScrollRef.current) {
+      observer.observe(loadOnScrollRef.current)
     }
 
     return (): void => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current)
+      if (loadOnScrollRef.current) {
+        observer.unobserve(loadOnScrollRef.current)
       }
     }
-  }, [loaderRef.current, loading, onScrollEnd])
+  }, [loadOnScrollRef.current, loading, onScrollEnd])
+
+  const bindLoadOnScrollRef = useCallback(
+    (index: number): { ref?: typeof loadOnScrollRef } => {
+      if (issues.length > SCROLL_BUFFER && index === issues.length - SCROLL_BUFFER) {
+        return {
+          ref: loadOnScrollRef
+        }
+      } else if (issues.length <= SCROLL_BUFFER && index === SCROLL_BUFFER - 1) {
+        return {
+          ref: loadOnScrollRef
+        }
+      }
+
+      return { ref: undefined }
+    },
+    [issues]
+  )
 
   return (
     <Box
@@ -44,8 +67,9 @@ function IssueList(props: IssueListProps): JSX.Element {
       overflow={'auto'}
       width={'300px'}
     >
-      {issues.map((issue) => (
+      {issues.map((issue, index) => (
         <Box
+          {...bindLoadOnScrollRef(index)}
           key={issue.id}
           borderBottomColor={'colorBorderWeak'}
           borderBottomWidth={'borderWidth10'}
@@ -89,7 +113,6 @@ function IssueList(props: IssueListProps): JSX.Element {
         </Box>
       ))}
       <Box
-        ref={loaderRef}
         borderLeftColor={'colorBorderWeak'}
         borderLeftWidth={'borderWidth10'}
         borderLeftStyle={'solid'}
