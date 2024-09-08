@@ -1,4 +1,4 @@
-import { useData } from '@renderer/providers'
+import { useConfiguration, useData } from '@renderer/providers'
 import { Flex } from '@twilio-paste/core/flex'
 import IssueDetail from './IssueDetail'
 import IssueList from './IssueList'
@@ -10,6 +10,7 @@ function Issues(): JSX.Element {
   const [keyword, setKeyword] = useState('')
   const [selectedIssue, setSelectedIssue] = useState<Issue>()
   const { issues, read, loading, load } = useData()
+  const { configuration } = useConfiguration()
 
   const filteredIssues = useMemo(() => {
     if (issues && keyword && keyword.length >= 3) {
@@ -24,6 +25,10 @@ function Issues(): JSX.Element {
       read(selectedIssue)
     }
   }, [selectedIssue])
+
+  useEffect(() => {
+    setSelectedIssue(undefined)
+  }, [configuration?.url])
 
   useEffect(() => {
     if (Array.isArray(issues) && issues.length > 0 && !selectedIssue) {
@@ -43,6 +48,7 @@ function Issues(): JSX.Element {
         <IssueList
           issues={filteredIssues}
           onSelectIssue={setSelectedIssue}
+          selectedIssue={selectedIssue}
           loading={loading}
           onScrollEnd={load}
         />

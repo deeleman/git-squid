@@ -1,4 +1,5 @@
 import { type Configuration } from '@preload/types'
+import { isValidURL, parseURL } from '@renderer/helpers'
 import {
   createContext,
   PropsWithChildren,
@@ -28,6 +29,12 @@ type ConfigurationContextApi = {
    * @param configuration The {@link Configuration} object meant to initialize or override the app configuration.
    */
   save: (configuration: Configuration) => Promise<boolean>
+  /**
+   * Replaces the configuration URL property value with another
+   * @param url
+   * @returns
+   */
+  swapURL: (url: string) => void
 }
 
 const ConfigurationContext = createContext<ConfigurationContextApi | undefined>(undefined)
@@ -49,6 +56,26 @@ export function ConfigurationProvider(props: PropsWithChildren): JSX.Element {
     return gitSquidAPI.updateConfiguration(configuration)
   }, [])
 
+  const swapURL = useCallback(
+    (url: string): void => {
+      const urlIsValid = isValidURL(url)
+      if (urlIsValid && configuration && configuration?.url !== url) {
+        const [username, repository] = parseURL(url)
+        save({
+          token: configuration.token,
+          username,
+          repository,
+          url
+        })
+      } else {
+        throw new Error(
+          `The URL provided '${url}' does not seem a valid public GitHub repository URL`
+        )
+      }
+    },
+    [configuration, setConfiguration]
+  )
+
   useEffect(() => {
     gitSquidAPI.onConfiguration((configuration) => {
       setConfiguration(configuration)
@@ -56,7 +83,7 @@ export function ConfigurationProvider(props: PropsWithChildren): JSX.Element {
   }, [setConfiguration])
 
   return (
-    <ConfigurationContext.Provider value={{ configuration, save, isReady }}>
+    <ConfigurationContext.Provider value={{ configuration, isReady, save, swapURL }}>
       {props.children}
     </ConfigurationContext.Provider>
   )

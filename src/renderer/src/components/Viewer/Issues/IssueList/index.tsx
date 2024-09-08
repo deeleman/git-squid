@@ -9,12 +9,13 @@ import { useEffect, useRef } from 'react'
 type IssueListProps = {
   issues: Issues
   loading?: boolean
+  selectedIssue?: Issue
   onSelectIssue: (issue: Issue) => void
   onScrollEnd: () => void
 }
 
 function IssueList(props: IssueListProps): JSX.Element {
-  const { issues, onSelectIssue, loading, onScrollEnd } = props
+  const { issues, onSelectIssue, loading, onScrollEnd, selectedIssue } = props
   const loaderRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -61,8 +62,14 @@ function IssueList(props: IssueListProps): JSX.Element {
           paddingY={'space40'}
           cursor={'pointer'}
           transition={'border-left-width 0.3s'}
+          backgroundColor={
+            selectedIssue?.id === issue.id ? 'colorBackgroundPrimaryWeaker' : undefined
+          }
           _hover={{
-            backgroundColor: 'colorBackgroundBrandHighlightWeakest',
+            backgroundColor:
+              selectedIssue?.id === issue.id
+                ? 'colorBackgroundPrimaryWeaker'
+                : 'colorBackgroundPrimaryWeakest',
             borderLeftWidth: 'borderWidth40'
           }}
           onClick={() => onSelectIssue(issue)}

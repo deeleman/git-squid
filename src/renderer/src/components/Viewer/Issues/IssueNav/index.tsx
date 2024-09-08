@@ -46,7 +46,7 @@ function IssueNav(props: IssueNavProps): JSX.Element {
           </Heading>
           {unreadIssues > 0 && (
             <Flex marginLeft={'space40'}>
-              <Tooltip text={`View your ${unreadIssues} unread issues`} placement="auto">
+              <Tooltip text={`${unreadIssues} unread issues`} placement="auto">
                 <Badge as="span" size="small" variant="notification_counter">
                   {unreadIssues > 99 ? '+99' : unreadIssues}
                 </Badge>
@@ -72,6 +72,7 @@ function IssueNav(props: IssueNavProps): JSX.Element {
               name="filter"
               type="search"
               placeholder="Filter by keyword"
+              autoFocus
               onChange={(e): void => onSearch(e.target.value || '')}
               insertBefore={<SearchIcon decorative size="sizeIcon20" />}
             />

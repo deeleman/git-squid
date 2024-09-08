@@ -6,14 +6,28 @@ import { Flex } from '@twilio-paste/core/flex'
 import { Heading } from '@twilio-paste/core/heading'
 import { Text } from '@twilio-paste/core/text'
 import { Tooltip } from '@twilio-paste/core/tooltip'
+import { Menu, MenuItem, useMenuState, MenuBadge } from '@twilio-paste/core/menu'
 import { GitIcon } from '@twilio-paste/icons/esm/GitIcon'
 import { LockIcon } from '@twilio-paste/icons/esm/LockIcon'
 import { SuccessIcon } from '@twilio-paste/icons/esm/SuccessIcon'
 import { ProcessInProgressIcon } from '@twilio-paste/icons/esm/ProcessInProgressIcon'
+import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon'
+import { useData } from '@renderer/providers'
+import { parseURL } from '@renderer/helpers'
 
 function IssueDetailTitle(props: { issue: Issue }): JSX.Element {
-  const { configuration } = useConfiguration()
+  const { configuration, swapURL } = useConfiguration()
+  const { repositoryURLs, loading } = useData()
+  const urlsMenu = useMenuState()
   const { issue } = props
+
+  const switchRepository = (url: string): void => {
+    if (url !== configuration?.url) {
+      swapURL(url)
+    }
+
+    urlsMenu.hide()
+  }
 
   return (
     <Box
@@ -25,20 +39,39 @@ function IssueDetailTitle(props: { issue: Issue }): JSX.Element {
     >
       <Flex padding={'space60'} vertical minHeight={'117px'} hAlignContent={'between'}>
         <Flex hAlignContent={'right'}>
-          <Tooltip text="Go to repo at github.com">
-            <Text fontWeight={'fontWeightBold'} as={'p'} marginBottom={'space40'}>
-              <Anchor href={configuration?.url || '#'} target="_blank">
-                <Flex>
-                  <Flex marginRight={'space10'}>
-                    <GitIcon decorative />
-                  </Flex>
+          <Box marginBottom={'space30'}>
+            <MenuBadge
+              {...urlsMenu}
+              disabled={loading}
+              i18nButtonLabel="Change account"
+              variant="decorative10"
+            >
+              <Tooltip text="Go to repo at github.com">
+                <Text fontWeight={'fontWeightBold'} as={'span'} color={'colorTextLink'}>
                   <Flex>
-                    {configuration?.username}/{configuration?.repository}
+                    <Flex marginRight={'space10'}>
+                      {loading ? <DownloadIcon decorative /> : <GitIcon decorative />}
+                    </Flex>
+                    <Flex>{parseURL(configuration!.url).join('/')}</Flex>
                   </Flex>
-                </Flex>
-              </Anchor>
-            </Text>
-          </Tooltip>
+                </Text>
+              </Tooltip>
+            </MenuBadge>
+            <Menu {...urlsMenu} aria-label="Repositories">
+              {repositoryURLs.map((url) => (
+                <MenuItem key={url} {...urlsMenu} onClick={() => switchRepository(url)}>
+                  <Flex hAlignContent={'between'} vAlignContent={'stretch'}>
+                    <Flex>{parseURL(url).join('/')}</Flex>
+                    <Flex marginLeft={'space50'}>
+                      <Anchor target="_blank" showExternal href={url}>
+                        Web
+                      </Anchor>
+                    </Flex>
+                  </Flex>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
         </Flex>
         <Flex grow vAlignContent={'bottom'}>
           <Heading as="h3" variant="heading20" marginBottom="space0">

@@ -13,7 +13,9 @@
 ## Key Features
 - **Effortless Configuration:** GitSquid provides a visual interface that allows you to easily configure and update your personal token and monitored repository. No more hassle with manual setups – everything is streamlined for convenience from the first time you open the application.
 
-- **Advanced Encryption:** Your privacy is a top priority and that's why GitSquid uses AES-256 symmetric encryption to securely persist all your personal data and browsing history, ensuring that your sensitive information remains safe, both during usage and after.
+- **Multiple repositories support:** GitSquid empowers you to effortlessly track and manage issues across multiple GitHub repositories, all in one intuitive platform. Stay organized and enhance productivity with real-time monitoring and updates..
+
+- **Advanced Encryption:** Your privacy is a top priority and that's why GitSquid uses AES-256 symmetric encryption to securely persist all your personal data, ensuring that your sensitive information remains safe, both during usage and after.
 
 - **Responsive data fetching** GitSquid keeps track of your viewing progress and will fetch additional content whenever available as you scroll the issues list. Moreover, you can ping the GitHub services anytime to also fetch the latest issues created during your session.
 
@@ -76,9 +78,7 @@ Here's a look at the upcoming enhancements and fixes planned for GitSquid to ens
 
 - **Adding End-to-End (E2E) Tests:** To further enhance the reliability of GitSquid, there is a plan to introduce E2E tests to simulate real user interactions. This will allow catching issues before they impact users and ensure a seamless experience.
 
-- **Improving Text Rendering with Markdown:** We’re working on enhancing the text rendering mechanism to expand options and peventr reading issues when content exceeds the viewport. This will improve the readability and presentation of formatted text, offering a smoother experience for users working with markdown in their repositories.
-
-- **Fixing Data Fetching Bug for Paginated Issues:** There is a bug identified where, under certain conditions, additional paginated issues are not fetched correctly. This fix will ensure that all relevant data loads without interruption, improving user efficiency.
+- **Improving Text Rendering with Markdown:** We’re working on enhancing the text rendering mechanism to expand options and prevent reading issues when content exceeds the viewport. This will improve the readability and presentation of formatted text, offering a smoother experience for users working with markdown in their repositories.
 
 These updates are part of GitSquid's strategy and ongoing commitment to delivering a robust and user-friendly issue monitoring tool.
 

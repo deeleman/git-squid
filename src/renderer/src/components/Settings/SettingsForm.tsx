@@ -1,3 +1,4 @@
+import { isValidToken, isValidURL, parseURL } from '@renderer/helpers'
 import { useConfiguration } from '@renderer/providers/configuration'
 import { useRouter } from '@renderer/providers/router'
 import { Anchor } from '@twilio-paste/core/anchor'
@@ -12,7 +13,7 @@ import { Paragraph } from '@twilio-paste/core/paragraph'
 import { Stack } from '@twilio-paste/core/stack'
 import { HideIcon } from '@twilio-paste/icons/esm/HideIcon'
 import { ShowIcon } from '@twilio-paste/icons/esm/ShowIcon'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 function SettingsForm(): JSX.Element {
   const { navigate } = useRouter()
@@ -24,14 +25,10 @@ function SettingsForm(): JSX.Element {
   const [urlError, setURLError] = useState(false)
   const [hasServerError, setServerError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const tokenRegexRef = useRef(
-    new RegExp(/^(gh[pous]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{22,38})$/)
-  )
-  const urlRegexRef = useRef(/^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/?$/)
 
   const submitHandler = (): void => {
-    const tokenIsValid = tokenRegexRef.current.test(token)
-    const urlIsValid = urlRegexRef.current.test(url)
+    const tokenIsValid = isValidToken(token)
+    const urlIsValid = isValidURL(url)
     setTokenError(!tokenIsValid)
     setURLError(!urlIsValid)
 
@@ -44,7 +41,7 @@ function SettingsForm(): JSX.Element {
     setIsLoading(true)
 
     try {
-      const [repository, username] = url.split('/').reverse()
+      const [username, repository] = parseURL(url)
       const isValid = await save({ url, token, username, repository })
 
       if (isValid) {
@@ -130,7 +127,7 @@ function SettingsForm(): JSX.Element {
       </Box>
       <Box>
         <Label htmlFor="githubRepoURL" required>
-          Github repository URL
+          Public GitHub repository URL
         </Label>
         <Input
           aria-describedby="githubRepoURLText"
@@ -156,7 +153,11 @@ function SettingsForm(): JSX.Element {
           </Button>
         )}
         <Button variant="primary" onClick={submitHandler} loading={isLoading}>
-          {isLoading ? 'Validating configuration' : 'Update configuration'}
+          {isLoading
+            ? 'Validating configuration'
+            : isFirstTime
+              ? 'Save personal configuration'
+              : 'Update configuration'}
         </Button>
       </Flex>
     </Stack>
