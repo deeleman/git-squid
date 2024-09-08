@@ -113,7 +113,7 @@ function IssueList(props: IssueListProps): JSX.Element {
                   Opened on {issue.dateOpened} by {issue.author}
                 </Text>
               </Flex>
-              {issue.isNew && (
+              {issue.isNew && !issue.read && (
                 <Flex>
                   <Badge variant="decorative30" as="span" size="small">
                     NEW
