@@ -1,4 +1,4 @@
-import type { Issue, Issues } from '@preload/types'
+import type { Issue, Issues, IssuesMap } from '@preload/types'
 import {
   createContext,
   JSX,
@@ -6,36 +6,51 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react'
+import { useConfiguration } from '../configuration'
 
 /**
  * The public API of the {@link DataProvider} context element.
  */
 type DataContextApi = {
   issues?: Issues
+  repositoryURLs: string[]
   loading?: boolean
+  isComplete?: boolean
   error?: string
-  isComplete: boolean
   load: (fetchNew?: boolean) => void
   read: (issue: string | Issue) => void
 }
 
 const DataContext = createContext<DataContextApi | undefined>(undefined)
 
+const gitSquidAPI = window.__gitSquid
+
 /**
  * The `<DataProvider>` provides a context wrapper for managing the data fetched from
  * the GitHub services and handle its state across all components and child providers.
  */
 export function DataProvider(props: PropsWithChildren): JSX.Element {
-  const [issues, setIssues] = useState<Issues>()
+  const [issuesMap, setIssuesMap] = useState<IssuesMap>({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
-  const [isComplete, setComplete] = useState(false)
-  const gitSquidAPI = window.__gitSquid
-  const issueCount = useRef(0)
+  const { configuration } = useConfiguration()
+
   const hasRegisteredListener = useRef(false)
+
+  const [issues, isComplete] = useMemo(() => {
+    const url = configuration?.url
+    return url && issuesMap && url in issuesMap
+      ? [issuesMap[url]?.issues || [], issuesMap[url]?.isComplete]
+      : [undefined, false]
+  }, [issuesMap, configuration?.url])
+
+  const repositoryURLs = useMemo(() => {
+    return Object.keys(issuesMap)
+  }, [issuesMap, configuration?.url])
 
   const load = useCallback(
     (fetchNew?: boolean): void => {
@@ -59,36 +74,42 @@ export function DataProvider(props: PropsWithChildren): JSX.Element {
     [loading, setLoading, setError]
   )
 
-  const read = (issue: string | Issue): void => {
-    const id = typeof issue === 'string' ? issue : issue.id.toString()
-    gitSquidAPI.readIssue(id)
-    setIssues((issues) => {
-      return issues?.map((issue) => ({
-        ...issue,
-        read: issue.read || issue.id === +id
-      }))
-    })
-  }
+  const read = useCallback(
+    (issue: string | Issue): void => {
+      const id = typeof issue === 'string' ? issue : issue.id.toString()
+      gitSquidAPI.readIssue(id)
 
-  const onIssuesCallback = (updatedIssues: Issues): void => {
-    if (updatedIssues.length === issueCount.current) {
-      setComplete(true)
-    }
+      const url = configuration?.url
 
-    setIssues(updatedIssues)
-    issueCount.current = updatedIssues.length
-    setLoading(false)
-  }
+      if (issuesMap && url && url in issuesMap) {
+        const issue = issuesMap[url]?.issues?.find((issue) => issue.id === +id)
+        if (issue) {
+          issue.read = true
+        }
+      }
+    },
+    [issuesMap, configuration?.url]
+  )
+
+  const onIssuesCallback = useCallback(
+    (updatedIssuesMap: IssuesMap): void => {
+      setIssuesMap(updatedIssuesMap)
+      setLoading(false)
+    },
+    [setIssuesMap, setLoading]
+  )
 
   useEffect(() => {
     if (!hasRegisteredListener.current) {
       gitSquidAPI.onIssues((updatedIssues) => onIssuesCallback(updatedIssues))
       hasRegisteredListener.current = true
     }
-  }, [])
+  }, [onIssuesCallback])
 
   return (
-    <DataContext.Provider value={{ issues, loading, load, error, read, isComplete }}>
+    <DataContext.Provider
+      value={{ issues, loading, load, error, read, isComplete, repositoryURLs }}
+    >
       {props.children}
     </DataContext.Provider>
   )

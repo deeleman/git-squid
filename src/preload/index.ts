@@ -1,6 +1,6 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, ipcRenderer, type IpcRenderer } from 'electron'
-import { type Configuration, type GitSquidAPI, type Issues, MessageType } from './types'
+import { type Configuration, type GitSquidAPI, type IssuesMap, MessageType } from './types'
 
 // Custom APIs for renderer
 const gitSquidAPI: GitSquidAPI = {
@@ -11,8 +11,8 @@ const gitSquidAPI: GitSquidAPI = {
 
   fetchIssues: (refresh?: boolean): Promise<{ success: boolean; error?: unknown }> =>
     ipcRenderer.invoke(MessageType.FetchIssues, refresh),
-  onIssues: (callback: (data: Issues) => void): IpcRenderer =>
-    ipcRenderer.on(MessageType.Issues, (_, data: Issues) => callback(data)),
+  onIssues: (callback: (issuesMap: IssuesMap) => void): IpcRenderer =>
+    ipcRenderer.on(MessageType.Issues, (_, issuesMap: IssuesMap) => callback(issuesMap)),
   readIssue: (issueId: string): Promise<void> => ipcRenderer.invoke(MessageType.ReadIssue, issueId)
 }
 

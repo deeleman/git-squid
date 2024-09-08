@@ -66,13 +66,39 @@ export type Issue = {
   isLocked: boolean
   body: string
   labels?: string[]
-  read?: boolean
+  read: boolean
+  isPullRequest: boolean
 }
 
 /**
  * The {@link Issues} type represents an array of {@link Issue} instance objects.
  */
 export type Issues = Issue[]
+
+/**
+ * The global issues graph exchanged between main and renderer
+ */
+export type IssuesMap = {
+  /**
+   * URL of a given public GitHub repository.
+   */
+  [url: string]:
+    | {
+        /**
+         * Issues collection.
+         */
+        issues?: Issues
+        /**
+         * Date of last fetch request.
+         */
+        lastRead?: Date
+        /**
+         * Signals whether the successive fetch requests have reached the end of the recordset.
+         */
+        isComplete?: boolean
+      }
+    | undefined
+}
 
 /**
  * The shared interface exposed to Renderer.
@@ -82,6 +108,6 @@ export interface GitSquidAPI {
   onConfiguration: (callback: (configuration: Configuration) => void) => void
 
   fetchIssues: (refresh?: boolean) => Promise<{ success: boolean; error?: unknown }>
-  onIssues: (callback: (issues: Issues) => void) => void
+  onIssues: (callback: (issuesMap: IssuesMap) => void) => void
   readIssue: (issueId: string) => Promise<void>
 }
