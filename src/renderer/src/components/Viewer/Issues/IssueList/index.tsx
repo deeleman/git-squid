@@ -5,7 +5,7 @@ import { Flex } from '@twilio-paste/core/flex'
 import { Spinner } from '@twilio-paste/core/spinner'
 import { Stack } from '@twilio-paste/core/stack'
 import { Text } from '@twilio-paste/core/text'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 type IssueListProps = {
   issues: Issues
@@ -16,10 +16,9 @@ type IssueListProps = {
 }
 
 /**
- * Sets the amount of issue items before the end of the dataset where the infinite scrolling logic
- * must be triggered in order to generate the impression of infinite scrolling.
+ * Reflects the average height (in pixels) of an item in the nav list
  */
-const SCROLL_BUFFER = 10
+const AVG_ITEM_HEIGHT = 100
 
 function IssueList(props: IssueListProps): JSX.Element {
   const { issues, onSelectIssue, loading, onScrollEnd, selectedIssue } = props
@@ -43,13 +42,22 @@ function IssueList(props: IssueListProps): JSX.Element {
     }
   }, [loadOnScrollRef.current, loading, onScrollEnd])
 
+  const triggerLoadOnScrollWaypointIndex = useMemo(() => {
+    const averageItemHeight =
+      Array.from(document.querySelectorAll('.issue-item') || [])
+        .map((item) => item.clientHeight)
+        .reduce((sum, itemHeight) => sum + itemHeight, 0) / issues.length || AVG_ITEM_HEIGHT
+
+    const itemsInViewport = Math.floor(window.innerHeight / averageItemHeight) - 1
+
+    return issues.length <= itemsInViewport
+      ? issues.length - 1
+      : issues.length - itemsInViewport + 1
+  }, [issues])
+
   const bindLoadOnScrollRef = useCallback(
     (index: number): { ref?: typeof loadOnScrollRef } => {
-      if (issues.length > SCROLL_BUFFER && index === issues.length - SCROLL_BUFFER) {
-        return {
-          ref: loadOnScrollRef
-        }
-      } else if (issues.length <= SCROLL_BUFFER && index === issues.length - 1) {
+      if (index === triggerLoadOnScrollWaypointIndex) {
         return {
           ref: loadOnScrollRef
         }
@@ -57,7 +65,7 @@ function IssueList(props: IssueListProps): JSX.Element {
 
       return { ref: undefined }
     },
-    [issues]
+    [triggerLoadOnScrollWaypointIndex]
   )
 
   return (
@@ -70,6 +78,7 @@ function IssueList(props: IssueListProps): JSX.Element {
     >
       {issues.map((issue, index) => (
         <Box
+          className="issue-item"
           {...bindLoadOnScrollRef(index)}
           key={issue.id}
           borderBottomColor={'colorBorderWeak'}
