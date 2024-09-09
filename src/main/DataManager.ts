@@ -90,7 +90,7 @@ export default class DataManager {
         }
 
         const newIssues = this.parseResponseIssues(responseJson, url)
-        const issues = this.mergeAndSortIssuesByURL(newIssues, url)
+        const issues = this.mergeAndSortIssuesByURL(newIssues, url, refresh)
         const lastRead = new Date()
         const isComplete = issues.length % PAGE_ITEMS > 0
 
@@ -147,13 +147,19 @@ export default class DataManager {
       read: item.id in this.readIssues[url],
       isPullRequest: !!item.pull_request, // GitHub's REST API considers every pull request an issue, so we flag those
       isNew:
-        new Date(item.created_at).getMilliseconds() >
-        new Date(this.readIssues[url].lastUpdated).getMilliseconds()
+        new Date(item.created_at).getTime() > new Date(this.readIssues[url].lastUpdated).getTime()
     }))
   }
 
-  private mergeAndSortIssuesByURL(newIssues: Issues, url: string): Issues {
-    const mergedIssues = [...(this.issuesMap[url]?.issues || []), ...newIssues]
+  private mergeAndSortIssuesByURL(newIssues: Issues, url: string, refresh?: boolean): Issues {
+    let existingIssues = this.issuesMap[url]?.issues || []
+    if (refresh) {
+      existingIssues = existingIssues.map((issue) => ({
+        ...issue,
+        isNew: false
+      }))
+    }
+    const mergedIssues = [...existingIssues, ...newIssues]
 
     const mergedIssuesSet = mergedIssues.reduce(
       (map, issue) => ({
