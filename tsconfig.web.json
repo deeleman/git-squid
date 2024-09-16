@@ -8,6 +8,7 @@
     "src/preload/types.*"
   ],
   "compilerOptions": {
+    "types": ["vitest/globals"],
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
