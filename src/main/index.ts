@@ -2,12 +2,10 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import ConfigurationManager from './ConfigurationManager'
 import DataManager from './DataManager'
 
-// Create the data and configuration manager instances
-const configManager = new ConfigurationManager()
-const dataManager = new DataManager(configManager)
+// Create the data manager instances
+const dataManager = new DataManager()
 
 function createWindow(): void {
   // Create the browser window.
@@ -30,13 +28,7 @@ function createWindow(): void {
     mainWindow.show()
 
     // Register created window to emit config and issues data to renderer
-    configManager.registerWindow(mainWindow)
     dataManager.registerWindow(mainWindow)
-
-    // Validates config update requests based on whether the new config is honored by GitHub
-    configManager.onConfigurationUpdateRequest((configuration) => {
-      return dataManager.fetchIssues(configuration, true)
-    })
   })
 
   // Open windows using the system default window when

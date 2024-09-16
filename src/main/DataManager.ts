@@ -1,7 +1,7 @@
 import { type BrowserWindow, ipcMain } from 'electron'
 import { MessageType } from '../preload/types'
 import type { Configuration, Issue, Issues, IssuesMap } from '../preload/types'
-import type ConfigurationManager from './ConfigurationManager'
+import ConfigurationManager from './ConfigurationManager'
 import FileManager from './FileManager'
 
 type ReadIssuesMap = {
@@ -13,13 +13,22 @@ const PAGE_ITEMS = 50
 export default class DataManager {
   issuesMap: IssuesMap = {}
 
+  private configManager: ConfigurationManager
+
   private fileManager: FileManager
 
   private readIssues: ReadIssuesMap
 
   private browserWindow?: BrowserWindow
 
-  constructor(private readonly configManager: ConfigurationManager) {
+  constructor() {
+    this.configManager = new ConfigurationManager()
+
+    // Validates config update requests based on whether the new config is honored by GitHub
+    this.configManager.onConfigurationUpdateRequest((configuration) => {
+      return this.fetchIssues(configuration, true)
+    })
+
     this.fileManager = new FileManager('read.conf', true)
 
     try {
@@ -49,6 +58,7 @@ export default class DataManager {
 
   registerWindow(browserWindow: BrowserWindow): void {
     this.browserWindow = browserWindow
+    this.configManager.registerWindow(browserWindow)
   }
 
   async fetchIssues(
