@@ -6,3 +6,4 @@ out
 SCHEMA.json
 EXAMPLE.json
 .env
+coverage

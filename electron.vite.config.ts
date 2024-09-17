@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import { resolve } from 'path'
@@ -21,5 +22,21 @@ export default defineConfig(({ command }) => ({
       }
     },
     plugins: [react()]
+  },
+  test: {
+    globals: true,
+    coverage: {
+      provider: 'istanbul', // or 'v8'
+      exclude: [
+        'out/**',
+        '**/main/index.ts',
+        '**/preload/index.ts',
+        '**/renderer/src/main.tsx',
+        '**/electron.vite.config.ts',
+        'plugins/**',
+        '**/types.ts',
+        '.eslintrc.cjs'
+      ]
+    }
   }
 }))
