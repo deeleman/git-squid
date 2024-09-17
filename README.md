@@ -52,6 +52,19 @@ GitSquid is built on top of a project bootstrapped with [Electron Vite](https://
 $ yarn dev
 ```
 
+### Testing GitSquid features
+
+Unit testing support has been implemented by means of [Vitest](https://vitest.dev/). You can fire up a testing run by running the following command, which will trigger testing in watch mode:
+
+```bash
+$ yarn test
+```
+Additionally, the testing setup allows for monitoring and assessing the current testing coverage rate across the repository by running the following command:
+
+```bash
+$ yarn coverage
+```
+
 ### Building GitSquid for distribution
 
 > [!WARNING]  
@@ -75,7 +88,7 @@ Here's a look at the upcoming enhancements and fixes planned for GitSquid to ens
 
 - **Integrating a packaging manager:** A smooth experience upon installing and executing the application as an end-user is top of mind at this moment, enhancing product distribution and branding with actual icons depicting the product identity.
 
-- **Adding Unit Tests:** Comprehensive unit tests will be implemented across the application to ensure each individual component functions correctly and consistently, increasing overall stability.
+- **Adding Unit Tests:** Currently a WIP initiative, comprehensive unit testins is being implemented across the application to ensure each individual component functions correctly and consistently, increasing overall stability.
 
 - **Adding End-to-End (E2E) Tests:** To further enhance the reliability of GitSquid, there is a plan to introduce E2E tests to simulate real user interactions. This will allow catching issues before they impact users and ensure a seamless experience.
 
