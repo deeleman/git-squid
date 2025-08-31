@@ -33,7 +33,6 @@ export default defineConfig(({ command }) => ({
         '**/preload/index.ts',
         '**/renderer/src/main.tsx',
         '**/electron.vite.config.ts',
-        'plugins/**',
         '**/types.ts',
         '.eslintrc.cjs'
       ]
